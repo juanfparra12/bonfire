@@ -261,9 +261,6 @@ app.get('/test1', function(req, res)
 
 
 
-console.log('in charp-branch');
-
-
 /////////////////////////////////////////////////
 console.log('Listening on 8888');
 app.listen(8888);
