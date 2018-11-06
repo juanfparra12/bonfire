@@ -1,13 +1,17 @@
 {
   "name": "bonfire",
   "version": "1.0.0",
-  "description": "live queue app",
+  "description": "live music-queue app",
   "main": "bnfr.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Jose Torres",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/technocharpie/bonfire"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",

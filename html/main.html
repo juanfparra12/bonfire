@@ -2,7 +2,7 @@
 <html>
 	<head></head>
 	<body>
-		<h1>MAIN</h1>
+		<h1>BONFIRE</h1>
 		
 		<div class = "container">
 			 <div id="loggedin">
@@ -10,10 +10,11 @@
 		    	<div id="user-profile"></div>
 		        
 		        <div id="oauth"></div>
-		        <div id="ttt"></div>
 
 		        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-		        <button class="btn btn-default" id="obtain-avail-devices">Obtain available devices</button>
+		        <h3>available devices</h3>
+		        <div id = "device_list"></div>
+		        <button class="btn btn-default" id="obtain-avail-devices">show available devices</button>
 
 		    </div>
 		</div>
@@ -49,7 +50,7 @@
 
 
 
-	    <!-- DISPLAY TOKEN SHIT -->
+	    <!-- DISPLAY TOKEN -->
 	    <script id="oauth-template" type="text/x-handlebars-template">
 		    <h2>oAuth info</h2>
 		    <dl class="dl-horizontal">
@@ -60,9 +61,10 @@
 	    <!-- END TOKEN -->
 
 
+
 	    <!--for the handlebars script templates-->
 	    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-	    <!--for the jQuery ajax calls that occur way down low-->
+	    <!--for the jQuery ajax calls that occur below-->
     	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
     	<script>
@@ -77,9 +79,12 @@
 	          var hashParams = {};
 	          var e, r = /([^&;=]+)=?([^&;]*)/g,
 	              q = window.location.hash.substring(1);
-	          while ( e = r.exec(q)) {
+
+	          while ( e = r.exec(q)) 
+	          {
 	             hashParams[e[1]] = decodeURIComponent(e[2]);
 	          }
+	          
 	          return hashParams;
 	        }
 
@@ -104,7 +109,7 @@
 	            refresh_token = params.refresh_token,
 	            error = params.error;
 
-
+	        var dev_list = '<h1>lmao</>';
 
 
 	        if (error) 
@@ -171,20 +176,40 @@
 		             );
 		        }
 
+		        function list_devices(devlist) {
+		        	dev_list = '<ul style = "list-style-type: none">'
+		        	if (devlist.length) 
+		        	{
+		        		for (var i = 0; i < devlist.length; ++i) 
+		        		{
+		        			dev_list += '<li><a href = "/lmaoo' + devlist[i].id +'">name: ' + devlist[i].name + ' | ID: ' + devlist[i].id + '</a></li>';
+		        		}
+		        	}
+		        	else
+		        	{
+		        		dev_list += '<li>no devices available</li>';
+		        	}
+
+		        	dev_list += '</ul>';
+		      		document.getElementById('device_list').innerHTML = dev_list;  	
+		        }
+
 		        function getdev() {
 		        	$.ajax(
-	                {
-	                  url: '/avail_dev',
-	                  data: { 
-	                  	'access_token': access_token
-	                  }
-	                }
-	              ).done(function(data) 
-	                     {
+				        {
+				        	url: '/avail_dev',
+		                    data: { 
+		                  		'access_token': access_token
+		                    },
+		                    
+	              			fail: function() {
+	              				console.log('fail');
+	              			}
+	                	}
+	              	).done(function(data) {
+	              				list_devices(data.devices);
+	              			});
 
-	                         console.log(data);
-	                     }
-	                );
 		        }
 
 		        document.getElementById('obtain-new-token').addEventListener('click', 
@@ -193,36 +218,12 @@
 		          	}, false);
 
 
-
-
-
-
 	          	document.getElementById('obtain-avail-devices').addEventListener('click', 
 	          	function() {
 	          		refreshtoken();
 	          		getdev();
 	              
 	            }, false);
-/*
-	          document.getElementById('obtain-avail-devices').addEventListener('click', 
-	          	function() {
-	              $.ajax(
-	                {
-	                  url: '/avail-dev',
-	                  data: {
-	                    'refresh_token': refresh_token
-	                  }
-	                }
-	              ).done(function(data) 
-	                     {
-	                         access_token = data.access_token;
-	                         oauthPlaceholder.innerHTML = oauthTemplate({
-	                            access_token: access_token,
-	                            refresh_token: refresh_token
-	                            });
-	                     }
-	                );
-	            }, false);*/
 
 
 	        } //end of ELSE

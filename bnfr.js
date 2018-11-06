@@ -15,9 +15,9 @@ var cookieParser = require('cookie-parser');
 var stateKey = 'spotify_auth_state';
 
 
-var client_id = '8aa11aaababa4e6c968030e37d1540a5'; // Your client id
-var client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var client_id = '8aa11aaababa4e6c968030e37d1540a5'; // client id
+var client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
+var redirect_uri = 'http://localhost:8888/callback'; // redirect uri
 var scope = 'user-read-private user-read-email user-read-playback-state';
 
 //COOKIE-GENERATOR
@@ -45,19 +45,11 @@ app.use(express.static(__dirname + '/html'))
    .use(cors())
    .use(cookieParser());;
 
-/*
-app.get('/lmao', function(req, res) {
-	res.redirect('/test2.html');
-});
-
-app.get('/back-home', function(req, res) {
-	res.redirect('/index.html');
-});*/
 
 
-//LOGIN FUNCTION
+//LOGIN 
 app.get('/login', function(req, res) {
-
+    console.log(req);
     var state = generateRandomString(16);
     res.cookie(stateKey, state); //KEY-VALUE PAIR 
 
@@ -201,7 +193,8 @@ app.get('/avail_dev', function(req, res) {
 
   request.get(options, function(error, response, body) {
     if (!error && response.statusCode === 200) {
-      console.log(body);
+      if (body.devices.length)
+        console.log(body.devices[0].id);
       res.send(body);
     }
   })
