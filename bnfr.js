@@ -17,7 +17,7 @@ var stateKey = 'spotify_auth_state';
 
 var client_id = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 var client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
-var redirect_uri = 'http://localhost:8888/callback'; // redirect uri
+var redirect_uri = 'http://localhost:8080/callback'; // redirect uri
 var scope = 'user-read-private user-read-email user-read-playback-state';
 
 //COOKIE-GENERATOR
@@ -255,5 +255,5 @@ app.get('/test1', function(req, res)
 
 
 /////////////////////////////////////////////////
-console.log('Listening on 8888');
-app.listen(8888);
+console.log('Listening on 8080');
+app.listen(8080);
