@@ -6,7 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jose Torres",
+  "author": [
+    "Gianne Flores",
+    "Juan Parra",
+    "Jose Torres",
+    "Ryan Zeng"
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -17,7 +22,6 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "handlebars": "^4.0.12",
-    "querystring": "^0.2.0",
     "request": "^2.88.0"
   }
 }
