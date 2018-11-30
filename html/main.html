@@ -1,3 +1,14 @@
+<!-----------------------------
+ * BONFIRE - A Live Music Queue
+ * Authors:
+ *    Gianne Flores
+ *    Juan Parra
+ *    Jose Torres
+ *    Ryan Zeng
+ * 
+ * UF Web Apps - Fall 2018
+ *--> 
+
 <!DOCTYPE html>
 <html>
 	<head></head>
@@ -69,124 +80,105 @@
 
     	<script>
 	      (function() {
+	      	const getHashParams = () => {
+				var hashParams = {};
+				var e, r = /([^&;=]+)=?([^&;]*)/g,
+				q = window.location.hash.substring(1);
 
-	        /**
-	         * Obtains parameters from the hash of the URL
-	         * @return Object
-	         */
-	        function getHashParams() 
-	        {
-	          var hashParams = {};
-	          var e, r = /([^&;=]+)=?([^&;]*)/g,
-	              q = window.location.hash.substring(1);
+				while ( e = r.exec(q)) {
+					hashParams[e[1]] = decodeURIComponent(e[2]);
+				}
 
-	          while ( e = r.exec(q)) 
-	          {
-	             hashParams[e[1]] = decodeURIComponent(e[2]);
-	          }
-	          
-	          return hashParams;
-	        }
+				return hashParams;
+			}
+
+	        const getCookie = (cname) => {
+			    const name = cname + "="; 
+			    const cArr = window.document.cookie.split(';'); 
+			     
+			   	for(var i = 0; i < cArr.length; i++) {
+			        var cookie = cArr[i].trim();
+			        if (cookie.indexOf(name) == 0) 
+			            return cookie.substring(name.length, cookie.length);
+			    }
+			     
+			    return "";
+			}
 
 
-
-	        //handlebars compilation, 
-	        //TODO: read more on this, for specifics
+	        //HANDLEBARS: compilation, 
+	        //TODO: find a cleaner way of doing the same front end stuff this is doing
 	        var userProfileSource = document.getElementById('user-profile-template').innerHTML, //select the handlebars scripts above, only the html
 	            userProfileTemplate = Handlebars.compile(userProfileSource), //run the scripts above, with the specific values in them
 	            userProfilePlaceholder = document.getElementById('user-profile'); //select the empty space where the html code would eventually go
-
-
-
-
 	        var oauthSource = document.getElementById('oauth-template').innerHTML, //select the handlebars scripts above, only the html
 	            oauthTemplate = Handlebars.compile(oauthSource), //run the scripts above, with the specific values in them
 	            oauthPlaceholder = document.getElementById('oauth'); //select the empty space where the html code would eventually go
 
+	        //Token acquisition
 	        var params = getHashParams(); //get the tokens from the auth.
-
-	        var access_token = params.access_token,
-	            refresh_token = params.refresh_token,
-	            error = params.error;
+	        var access_token = getCookie('spotify_acc_token');//params.access_token,
+	        const refresh_token = getCookie('spotify_ref_token'); //params.refresh_token,
+	        const error = params.error;
 
 	        var dev_list = '<h1>lmao</>';
 
-
-	        if (error) 
-	        {
+	        if (error) {
 	          alert('There was an error during the authentication');
 	        } 
-	        else 
-	        {
-	          if (access_token) 
-	          {
-	            // render oauth info
-	            oauthPlaceholder.innerHTML = oauthTemplate({
-	              access_token: access_token,
-	              refresh_token: refresh_token
-	            }); //populate the script template and set it all into the html script of the holder we had, for the tokens
+	        else {
+	          	if (access_token) {
+		            // render Handlebars oauth info
+		            oauthPlaceholder.innerHTML = oauthTemplate({
+		              access_token: access_token,
+		              refresh_token: refresh_token
+		            });
+					
+					$.ajax({
+		                url: 'https://api.spotify.com/v1/me',
+		                headers: {
+		                  'Authorization': 'Bearer ' + access_token
+		                },
+		                success: (response) => { //THIS ONE RIGHT headers
+		                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
 
+		                 //$('#login').hide();
+		                 $('#loggedin').show();
+		                }
+		            });
+	          	} 
+		        else {
+		          	console.log('failed to login');
+		            $('#loggedin').hide();
+		        }
 
-	            //now that the cacll has succeeded we're gonna use the tokens to actually get the stuff we wanted, 
-	            //populate the user profile template script and then set it to the empty html script holder we had
-	            $.ajax({
-	                url: 'https://api.spotify.com/v1/me',
-	                headers: {
-	                  'Authorization': 'Bearer ' + access_token
-	                },
-	                success: function(response) { //THIS ONE RIGHT headers
-	                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-
-	                 //$('#login').hide();
-	                 $('#loggedin').show();
-	                }
-	            });
-
-	          } 
-	          else 
-	          {
-	          	//if we dont the access_token, then we fail... damn...
-	              // render initial screen
-	              //$('#login').show();
-	              $('#loggedin').hide();
-	          }
-
-
-
-	          //CLICK STUFF FOR NEW TOKEN
-	          //whenever we need to refresh the token, we do the following http request, through jQuery's ajax format, 
-	          //then set the new access token to the var and the populate the handlebars script templates
-
-	            function refreshtoken() {
-		          $.ajax(
-		                {
+	            const refreshtoken =() => {
+		            $.ajax(
+		         		{
 		                  url: '/refresh_token',
 		                  data: {
 		                    'refresh_token': refresh_token
 		                  }
+		                })
+		            .done((data) => {
+		                access_token = data.access_token;
+		                oauthPlaceholder.innerHTML = oauthTemplate(
+		            		{
+	                            access_token: access_token,
+	                            refresh_token: refresh_token
+		                	});
 		                }
-		              ).done(function(data) 
-		                     {
-		                         access_token = data.access_token;
-		                         oauthPlaceholder.innerHTML = oauthTemplate({
-		                            access_token: access_token,
-		                            refresh_token: refresh_token
-		                            });
-		                     }
-		             );
+		            );
 		        }
 
-		        function list_devices(devlist) {
-		        	dev_list = '<ul style = "list-style-type: none">'
-		        	if (devlist.length) 
-		        	{
-		        		for (var i = 0; i < devlist.length; ++i) 
-		        		{
+		        const list_devices = (devlist) => {
+		        	let dev_list = '<ul style = "list-style-type: none">'
+		        	if (devlist.length) {
+		        		for (var i = 0; i < devlist.length; ++i) {
 		        			dev_list += '<li><a href = "/lmaoo' + devlist[i].id +'">name: ' + devlist[i].name + ' | ID: ' + devlist[i].id + '</a></li>';
 		        		}
 		        	}
-		        	else
-		        	{
+		        	else {
 		        		dev_list += '<li>no devices available</li>';
 		        	}
 
@@ -194,7 +186,7 @@
 		      		document.getElementById('device_list').innerHTML = dev_list;  	
 		        }
 
-		        function getdev() {
+		        const avail_dev = () => {
 		        	$.ajax(
 				        {
 				        	url: '/avail_dev',
@@ -202,26 +194,20 @@
 		                  		'access_token': access_token
 		                    },
 		                    
-	              			fail: function() {
-	              				console.log('fail');
-	              			}
+	              			fail: () => { console.log('fail'); }
 	                	}
-	              	).done(function(data) {
-	              				list_devices(data.devices);
-	              			});
+	              	).done((data) => { list_devices(data.devices); });
 
 		        }
 
 		        document.getElementById('obtain-new-token').addEventListener('click', 
-		          	function() {
-		          		refreshtoken();
-		          	}, false);
+		          	() => { refreshtoken(); }, false);
 
 
 	          	document.getElementById('obtain-avail-devices').addEventListener('click', 
-	          	function() {
+	          	() => {
 	          		refreshtoken();
-	          		getdev();
+	          		avail_dev();
 	              
 	            }, false);
 
