@@ -42,6 +42,7 @@ app.listen(8080);
 
 //Set html directory, cors, cookieParser
 app.use(express.static(__dirname + '/html'))
+   .use(express.static(__dirname))
    .use(cors())
    .use(cookieParser());
 
