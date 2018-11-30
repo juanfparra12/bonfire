@@ -56,11 +56,6 @@
 	    <!-- END INFO -->
 
 
-
-
-
-
-
 	    <!-- DISPLAY TOKEN -->
 	    <script id="oauth-template" type="text/x-handlebars-template">
 		    <h2>oAuth info</h2>
@@ -92,8 +87,8 @@
 
 	        //Token acquisition
 	        var params = getHashParams(); //get the tokens from the auth.
-	        var access_token = getCookie('spotify_acc_token');//params.access_token,
-	        const refresh_token = getCookie('spotify_ref_token'); //params.refresh_token,
+	        var access_token = getCookie('spotify_acc_token');//acc_token from cookie,
+	        const refresh_token = getCookie('spotify_ref_token'); //ref_token from cookie,
 	        const error = params.error;
 
 	        if (error) {

@@ -20,7 +20,7 @@ const refTokenKey   = 'spotify_ref_token';
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
-const scope         = 'user-read-private user-read-email user-read-playback-state';
+const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
 //Cookie-Generator
@@ -147,6 +147,31 @@ app.get('/avail_dev', (req, res) => {
         if (!error && response.statusCode === 200) { res.send(body); }
     })
 });
+
+//POST: /create_pl
+app.post('/create_pl', (req, res) => {
+    const access_token = req.query.access_token;
+    const user_id      = req.query.user_id;
+    const url          = 'https://api.spotify.com/v1/users/'+ user_id +'/playlists';
+    const options      = {
+        url: 'https://api.spotify.com/v1/users/'+ user_id +'/playlists',
+        headers: {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json'
+        },
+        body: {
+            name: 'Queue, made by Bonfire', 
+            public: true
+        },
+        json: true
+    };
+    request.post(options, (error, response, body) => {
+        if (!error && response.statusCode === 201) { 
+            res.send(body); 
+        }
+    });  
+});
+
 
 
 

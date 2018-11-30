@@ -15,7 +15,7 @@ const get_user = (access_token, res_func) => {
         headers: {
           'Authorization': 'Bearer ' + access_token
         },
-        success: (response) => { res_func(response); }
+        success: (response) => { console.log('user info:\n' + response.id); res_func(response); }
     });
 }
 
