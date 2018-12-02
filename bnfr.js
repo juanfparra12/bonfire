@@ -112,8 +112,8 @@ app.get('/callback', (req, res) => {
 
 //GET: /refresh_token used to obtain the new access token with the provided refresh_token
 app.get('/refresh_token', (req, res) => {
-  //Requesting access token using the refresh token
     const refresh_token = req.query.refresh_token;
+
     const authOptions = {
         url: 'https://accounts.spotify.com/api/token',
         headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
@@ -135,6 +135,7 @@ app.get('/refresh_token', (req, res) => {
 //GET: /avail_dev obtains list of current devices
 app.get('/avail_dev', (req, res) => {
     const access_token = req.query.access_token;
+
     const options = {
         url: 'https://api.spotify.com/v1/me/player/devices',
         headers: {
@@ -152,7 +153,7 @@ app.get('/avail_dev', (req, res) => {
 app.post('/create_pl', (req, res) => {
     const access_token = req.query.access_token;
     const user_id      = req.query.user_id;
-    const url          = 'https://api.spotify.com/v1/users/'+ user_id +'/playlists';
+
     const options      = {
         url: 'https://api.spotify.com/v1/users/'+ user_id +'/playlists',
         headers: {
@@ -165,13 +166,81 @@ app.post('/create_pl', (req, res) => {
         },
         json: true
     };
+
     request.post(options, (error, response, body) => {
-        if (!error && response.statusCode === 201) { 
-            res.send(body); 
-        }
+        if (!error && response.statusCode === 201) { res.send(body); }
     });  
 });
 
+//GET: /search returns JSON, with field "tracks" that is an array of all tracks found, as JSONs, where we can access their id, name, and uri
+app.get('/search', (req, res) => {
+    const access_token = req.query.access_token;
+    const query        = req.query.query; 
+    const url          ='https://api.spotify.com/v1/search' +
+                        '?q=' + query +
+                        '&type=track&market=US&limit=10&offset=0';
+
+    const options = {
+        url: url,
+        headers: {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        json: true
+    };
+
+    request.get(options, (error, response, body) => {
+        if (!error && response.statusCode === 200) { res.send(body); }
+    })
+});
+
+//POST: /add_track adds the respective track to the playlist using the track's uri
+app.post('/add_track', (req, res) => {
+    const access_token = req.query.access_token;
+    const playlist_id  = req.query.playlist_id;
+    const track_uri    = req.query.track_uri;
+    const url          = 'https://api.spotify.com/v1/playlists/' + playlist_id + 
+                         '/tracks?uris=' + track_uri;
+
+    const options      = {
+        url: url,
+        headers: {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        json: true
+    };
+
+    request.post(options, (error, response, body) => {
+        if (!error && response.statusCode === 201) { res.send(body); }
+    });  
+});
+
+//PUT: /start starts playing the playlist
+app.put('/start', (req, res) => {
+    const access_token = req.query.access_token;
+    const playlist_uri = req.query.playlist_uri;
+    const device_id    = req.query.device_id;
+
+    const options      = {
+        url: 'https://api.spotify.com/v1/me/player/play?device_id=' + device_id,
+        headers: {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: {
+            context_uri: playlist_uri
+        },
+        json: true
+    };
+    console.log('here');
+    request.put(options, (error, response, body) => {
+        if (!error && response.statusCode === 204) { res.send('Playlist started'); }
+    });  
+});
 
 
 
