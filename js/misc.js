@@ -62,8 +62,8 @@ const list_devices = (devlist) => {
 
 
 // changing string for query example
-function stringToQuery() {
-    var str = document.getElementById("query").value;
+function stringToQuery(str) {
+    str = document.getElementById("query").value;
     var res = encodeURI(str);
     return res;
 }

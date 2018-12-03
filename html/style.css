@@ -12,3 +12,9 @@ body{
 	background-color: #FF7F50;
     overflow-x: hidden;
 }
+
+.search-results{
+    width:300px;
+    height:300px;
+    border: 2px solid black;
+}

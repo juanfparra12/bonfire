@@ -51,9 +51,10 @@
 
 		    </div>
 		     <div class="creator-controls">
+		        <button class="btn btn-default" id="create-playlist">create playlist</button>
 		    	<h2>Number of Songs Added by User?</h2>
    
-      			<div class="""slidecontainer">
+      			<div class="slidecontainer">
 				  <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
 				  <p>Value: <span id="demo"></span></p>
 				</div>
@@ -213,7 +214,14 @@
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		avail_dev(access_token, list_devices);
-	            }, false);
+							}, false);
+							
+							document.getElementById('create-playlist').addEventListener('click',
+							() => {
+								user_id = "123";
+								refreshtoken(refresh_token, (res) => { access_token = res; });
+								create_playlist(access_token, user_id, update_queue_user);									
+							}, false);
 	        } 
 	      })();
 	    </script>
