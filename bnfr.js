@@ -19,7 +19,8 @@ const bodyParser    = require('body-parser');
 const stateKey      = 'spotify_auth_state';
 const accTokenKey   = 'spotify_acc_token';
 const refTokenKey   = 'spotify_ref_token';
-const queueTokenKey = 'bonfire_queue_token';
+const queueIdKey    = 'bonfire_queue_id';
+const devIdKey      = 'bonfire_dev_id'; 
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
@@ -67,7 +68,7 @@ mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue
 
 const create_queue = (access_token, refresh_token, res, red_url) => {
     const url = 'http://localhost:8080/queue' +
-                '?access_token=' + access_token +
+                '?access_token='  + access_token +
                 '&refresh_token=' + refresh_token;
 
     const options = {
@@ -78,8 +79,25 @@ const create_queue = (access_token, refresh_token, res, red_url) => {
     request.post(options, (error, response, body) => {
         if (!error && response.statusCode === 200) { 
             console.log(body); 
-            res.cookie(queueTokenKey, body._id, { secure: false });
+            res.cookie(queueIdKey, body._id, { secure: false });
             res.redirect(302, red_url); 
+        };
+    });
+}
+
+const update_queue_dev_id = (dev_id, queue_id) => {
+    const url = '/queue/update/device_id' +
+                '?device_id=' + dev_id + 
+                '&id='        + queue_id;
+
+    const options = {
+        url: url,
+        json: true
+    };
+
+    request.post(options, (error, response, body) => {
+        if (!error && response.statusCode === 200) { 
+            console.log(body);
         };
     });
 }
@@ -277,6 +295,17 @@ app.put('/start', (req, res) => {
     request.put(options, (error, response, body) => {
         if (!error && response.statusCode === 204) { res.send('Playlist started'); }
     });  
+});
+
+//GET: '/select' should create a cookie and update the queue with the device id
+app.get('/select_id', (req, res) => {
+    const dev_id   = req.query.dev_id;
+    const queue_id = req.query.queue_id;
+    res.cookie(devIdKey, dev_id, { secure: false });
+    update_queue_dev_id(dev_id, queue_id);
+
+    //TODO: redirect to new main with the cookie now saved.
+    res.redirect('/main.html');
 });
 
 /////////////////////////////////////////////////

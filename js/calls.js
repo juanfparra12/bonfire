@@ -10,7 +10,7 @@
  */ 
 
 const update_queue_user = (res) => {
-	const queue_id = getCookie('bonfire_queue_token');
+	const queue_id = getCookie('bonfire_queue_id');
 	const url      = '/queue/update/creator?creator=' + res.id + '&id=' + queue_id;
 	$.ajax({
         url: url,

@@ -42,10 +42,11 @@ const getCookie = (cname) => {
 }
 
 const list_devices = (devlist) => {
-    let dev_list = '<ul style = "list-style-type: none">'
+    let dev_list = '<ul style = "list-style-type: none">';
+    const queue_id = getCookie('bonfire_queue_id');
     if (devlist.length) {
         for (var i = 0; i < devlist.length; ++i) {
-            dev_list += '<li><a href = "/lmaoo' + devlist[i].id +'">name: ' + devlist[i].name + ' | ID: ' + devlist[i].id + '</a></li>';
+            dev_list += '<li><a href = "/select_id?dev_id=' + devlist[i].id +'&queue_id=' + queue_id +'">name: ' + devlist[i].name + ' | ID: ' + devlist[i].id + '</a></li>';
         }
     }
     else {
@@ -55,6 +56,8 @@ const list_devices = (devlist) => {
     dev_list += '</ul>';
         document.getElementById('device_list').innerHTML = dev_list;    
 }
+
+
 
 
 
