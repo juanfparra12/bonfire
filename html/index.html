@@ -14,9 +14,9 @@
 	<head>
 		<title>Bonfire - Live Music Queue</title>
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-		<link rel = "stylesheet" href="style.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+        <link rel = "stylesheet" href="style.css">
         <!-- <link href="css/style.css" rel="stylesheet"/> -->
         <script src="js-2/jquery-1.11.2.js"></script>
         <script src="js-2/bootstrap.js"></script>
@@ -37,7 +37,7 @@
 
             <nav ng-controller="NavCtrl" class="navbar navbar-light" style="background-color: #B6B9EF;">
                   <a class="navbar-brand" >
-                    <img src="bonfire-img copy.png" height="70" alt="">
+                    <img src="bonfire-img copy.png" height="40" alt="">
                   </a>
                   <a class="btn btn-primary btn-lg" href="#home"  role="button">Home</a> 
                   <span ng-show="!currentUser">
@@ -58,13 +58,14 @@
             
             <div ng-view>
             </div>
-        </div>
+     
     
 		<h1>BONFIRE</h1>
 		<a href = "/login" class="btn btn-primary">light bonfire</a>
 		<h2> or</h2>
 		<a href = "user.html" class="btn btn-primary">join bonfire</a>  <!-- TODO: have empty form, to allow submission of bonfire id -->
-	</body> 
+	   </div>
+   </body> 
 </html>
 
 
