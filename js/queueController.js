@@ -25,7 +25,7 @@ exports.create = function(req, res){
         "refreshToken" : refreshToken 
     };
 
-    var query = Queue.where({refreshToken: refreshToken});
+    var query = Queue.where({refreshToken:refreshToken});
     
     // Queries to find if user already has an existing queue
     query.find(function(err,queue){
@@ -41,7 +41,7 @@ exports.create = function(req, res){
                         console.log(err);
                         res.status(400).send(err);
                     }else{
-                        res.json(queue);
+                        res.status(200).json(queue);
                     }
                 });
             
@@ -123,29 +123,33 @@ exports.get = function(req, res){
             console.log(err);
             res.status(400).send(err);
         }else{
-            res.json(queue);
+            console.log(_id);
+            res.status(200).json(queue);
         }
     });
 }
 
 // Delete Queue
 exports.delete = function(req, res){
-    var creatorName = req.query.creator;
-    var query = Queue.where({creator:creatorName});
+    var id = req.query.id;
+    var query = Queue.where({_id:id});
     query.findOneAndRemove(function(err, queue){
         if(err){
             console.log(err);
             res.status(400).send(err);
         }else{
-            res.json(queue + " has been removed");
+            res.status(200).json(queue);
         }
     });
 }
 
+
+// Song Controls
+
 // Update queue with songs
 // Requires CreatorID, songId, songName, and addedBy name
 exports.addSong = function(req, res){
-    var creatorName = req.query.creator;
+    var id = req.query.id;
     var songId = req.query.songId;
     var songName = req.query.songName;
     var addedBy = req.query.addedBy;
@@ -157,9 +161,9 @@ exports.addSong = function(req, res){
             "addedBy" : addedBy
         }
     );
-
+    console.log(song);
     // // Check if player already has a playlist
-    Queue.findOne({creator:creatorName}, (err, queue) => {
+    Queue.findOne({_id:id}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
@@ -174,15 +178,81 @@ exports.addSong = function(req, res){
                         console.log(err);
                         res.send(err);
                     }else{
-                        res.send(doc);
+                        res.status(200).send(doc);
                     }
                 });
             }else{
-                res.send("Creator does not exist");
+                res.status(404).send("Creator does not exist");
             }
         }
-
-        
     });
-  
 };
+
+// GET: Obtains next song information
+exports.playNextSong = (req, res)=>{
+    var id = req.query.id;
+
+    // // Check if player already has a playlist
+    Queue.findOne({_id:id}, (err, queue) => {
+        if(err){
+            console.log(err);
+            res.status(400).send(err);
+        }else{
+            // If creator exists
+            if(queue != null){
+                var data = queue.songs;
+                var song = data[0];                
+                data.shift();
+
+                Queue.findOneAndUpdate({creator:creatorName}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                    if(err){
+                        console.log(err);
+                        res.send(err);
+                    }else{
+                        res.status(200).send(song);
+                    }
+                });
+            }else{
+                res.status(404).send("Creator does not exist");
+            }
+        }
+    });
+}
+
+// DELETE: Obtains next song information
+exports.deleteSong = (req, res)=>{
+    var id = req.query.id;
+
+    // // Check if player already has a playlist
+    Queue.findOne({_id:id}, (err, queue) => {
+        if(err){
+            console.log(err);
+            res.status(400).send(err);
+        }else{
+            var songId = req.query.song_id;
+            // If creator exists
+            if(queue != null){
+                var data = queue.songs;
+                var song = "";
+                for(var i = 0; i < data.length; i++){
+                    if(songId == data[i].songId){
+                        song = data[i];
+                        data.splice(i, 1);
+                    }
+                }  
+
+                Queue.findOneAndUpdate({creator:creatorName}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                    if(err){
+                        console.log(err);
+                        res.send(err);
+                    }else{
+                        res.status(200).send(song);
+                    }
+                });
+            }else{
+                res.status(404).send("Creator does not exist");
+            }
+        }
+    });
+}
+

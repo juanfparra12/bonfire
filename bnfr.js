@@ -29,6 +29,7 @@ const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
+
 //Cookie-Generator
 const generateRandomString = (length) => {
     var   text     = '';
@@ -66,18 +67,24 @@ multer();
 
 require("./app/app.js")(app);
 
-//Routing for queues
+
+// Routing for queues
 app.route('/queue')
-   .post(queue.create)
-   .get(queue.get)
-   .put(queue.addSong)
-   .delete(queue.delete);
+  .post(queue.create)
+  .get(queue.get)
+  .put(queue.addSong)
+  .delete(queue.delete);
+
 
 // PUT: Update Queue with CreatorID, Playlist ID, Playlist URI, & Device ID
 app.put('/queue/update/creator', queue.updateCreator);
 app.put('/queue/update/playlist_id', queue.updatePlaylistId);
 app.put('/queue/update/playlist_uri', queue.updatePlaylistURI);
 app.put('/queue/update/device_id', queue.updateDeviceId);
+
+// SONG Controller
+app.get('/queue/songs', queue.playNextSong);
+app.delete('/queue/songs', queue.deleteSong);
 
 // Connect to database
 mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
