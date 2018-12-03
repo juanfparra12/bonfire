@@ -53,6 +53,5 @@ const list_devices = (devlist) => {
 function stringToQuery() {
     var str = document.getElementById("query").value;
     var res = encodeURI(str);
-    re
-
-
+    return res;
+}
