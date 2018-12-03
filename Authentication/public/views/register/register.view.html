@@ -1,17 +1,15 @@
 <h1>Register</h1>
 
 {{error}}
-<form>
-<div class="col-xs-8">
+
 <input  ng-model="user.username"  class="form-control" placeholder="username"/>
-</div>
-<div class="col-xs-8">
+
+
 <input  ng-model="user.password"  class="form-control" placeholder="password"       type="password"/>
-</div>
-<div class="col-xs-8">
+
+
 <input  ng-model="user.password2" class="form-control" placeholder="password again" type="password"/>
-</div>
-</form>
+
 
 <button style="position: absolute;top: 40%; padding-left: 20px; left: 90;"  ng-click="register(user)"   class="btn btn-primary btn-lg">Register</button><br/>
 
