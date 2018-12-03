@@ -1,0 +1,25 @@
+<h1>Login</h1>
+
+<div ng-if="error" class="alert alert-danger">
+  {{error}}
+</div>
+
+<input
+  ng-model="user.username"
+  class="form-control"
+  placeholder="username"/>
+  
+<input
+  ng-model="user.password"
+  class="form-control"
+  placeholder="password"
+  type="password"/>
+
+<button
+  ng-click="login(user)"
+  class="btn btn-primary btn-lg">
+  
+  Login
+  
+</button>
+
