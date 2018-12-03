@@ -123,7 +123,6 @@ exports.get = function(req, res){
             console.log(err);
             res.status(400).send(err);
         }else{
-            console.log(_id);
             res.status(200).json(queue);
         }
     });
@@ -173,7 +172,7 @@ exports.addSong = function(req, res){
                 var data = queue.songs;
                 data.push(song);
                 // res.send(data);
-                Queue.findOneAndUpdate({creator:creatorName}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                Queue.findOneAndUpdate({_id:id}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
                     if(err){
                         console.log(err);
                         res.send(err);
@@ -204,7 +203,7 @@ exports.playNextSong = (req, res)=>{
                 var song = data[0];                
                 data.shift();
 
-                Queue.findOneAndUpdate({creator:creatorName}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                Queue.findOneAndUpdate({_id:id}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
                     if(err){
                         console.log(err);
                         res.send(err);
@@ -241,7 +240,7 @@ exports.deleteSong = (req, res)=>{
                     }
                 }  
 
-                Queue.findOneAndUpdate({creator:creatorName}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                Queue.findOneAndUpdate({_id:id}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
                     if(err){
                         console.log(err);
                         res.send(err);
