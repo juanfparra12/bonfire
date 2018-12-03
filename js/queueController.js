@@ -54,22 +54,57 @@ exports.create = function(req, res){
 
 };
 
-// PUT: Update Queue with CreatorID, Playlist ID, Playlist URI, & Device ID
-exports.updateQueueInfo = (req,res) => {
+// PUT: Update Queue with CreatorID
+exports.updateCreator = (req,res) => {
     var _id = req.query.id;
-    // Requires these parameters, or can be called from somewhere else
     var creatorName = req.query.creator;
+
+    Queue.findOneAndUpdate({_id:_id}, {$set:{creator: creatorName}}, {new:true}, (error,doc)=>{
+        if(error){
+            console.log(error);
+            res.send(error);
+        }else{
+            res.status(200).send(doc);
+        }
+    });
+}
+
+// PUT: Update Queue with Playlist ID
+exports.updatePlaylistId = (req,res) => {
+    var _id = req.query.id;
     var playlist_id = req.query.playlist_id;
+
+    Queue.findOneAndUpdate({_id:_id}, {$set:{playlistId : playlist_id}}, {new:true}, (error,doc)=>{
+        if(error){
+            console.log(error);
+            res.send(error);
+        }else{
+            res.status(200).send(doc);
+        }
+    });
+}
+
+// PUT: Update Queue with Playlist URI
+exports.updatePlaylistURI = (req,res) => {
+    var _id = req.query.id;
     var playlist_uri = req.query.playlist_uri;
+
+    Queue.findOneAndUpdate({_id:_id}, {$set:{playlistURI : playlist_uri}}, {new:true}, (error,doc)=>{
+        if(error){
+            console.log(error);
+            res.send(error);
+        }else{
+            res.status(200).send(doc);
+        }
+    });
+}
+
+// PUT: Update Queue with Device ID
+exports.updateDeviceId = (req,res) => {
+    var _id = req.query.id;
     var device_id = req.query.device_id;
-    var updatedData = 
-    {
-        creator: creatorName,
-        playlistId : playlist_id,
-        playlistURI : playlist_uri,
-        deviceId : device_id
-    }
-    Queue.findOneAndUpdate({_id:_id}, {$set:updatedData}, {new:true}, (error,doc)=>{
+        
+    Queue.findOneAndUpdate({_id:_id}, {$set:{deviceId : device_id}}, {new:true}, (error,doc)=>{
         if(error){
             console.log(error);
             res.send(error);

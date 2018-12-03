@@ -57,7 +57,10 @@ app.route('/queue')
    .delete(queue.delete);
 
 // PUT: Update Queue with CreatorID, Playlist ID, Playlist URI, & Device ID
-app.put('/updateUser', queue.updateQueueInfo);
+app.put('/queue/update/creator', queue.updateCreator);
+app.put('/queue/update/playlist_id', queue.updatePlaylistId);
+app.put('/queue/update/playlist_uri', queue.updatePlaylistURI);
+app.put('/queue/update/device_id', queue.updateDeviceId);
 
 // Connect to database
 mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});

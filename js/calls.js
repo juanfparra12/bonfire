@@ -11,11 +11,11 @@
 
 const update_queue_user = (res) => {
 	const queue_id = getCookie('bonfire_queue_token');
-	const url      = '/updateUser?creator=' + res.id + '&id=' + queue_id;
+	const url      = '/queue/update/creator?creator=' + res.id + '&id=' + queue_id;
 	$.ajax({
         url: url,
         method: 'PUT',
-        success: (response) => { setCookie('bonfire_user_id', res.id, 1); }
+        success: (response) => { setCookie('bonfire_user_id', res.id, 1); console.log('id is: ' + getCookie('bonfire_user_id'))}
     });
 }
 
