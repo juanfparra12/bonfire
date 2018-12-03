@@ -1,6 +1,17 @@
-var mongoose = require('mongoose'),
-    Queue = require('./queueSchema.js'),
-    Song = require('./songSchema.js')
+/* * * * * * * * * * * * * * * *
+ * BONFIRE - A Live Music Queue
+ * Authors:
+ *    Gianne Flores
+ *    Juan Parra
+ *    Jose Torres
+ *    Ryan Zeng
+ * 
+ * UF Web Apps - Fall 2018
+ */ 
+
+const mongoose = require('mongoose');
+const Queue    = require('./queueSchema.js');
+const Song     = require('./songSchema.js');
 
 
 var data;

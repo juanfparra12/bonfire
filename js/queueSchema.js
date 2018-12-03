@@ -1,5 +1,16 @@
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+/* * * * * * * * * * * * * * * *
+ * BONFIRE - A Live Music Queue
+ * Authors:
+ *    Gianne Flores
+ *    Juan Parra
+ *    Jose Torres
+ *    Ryan Zeng
+ * 
+ * UF Web Apps - Fall 2018
+ */ 
+
+const mongoose = require('mongoose');
+const Schema   = mongoose.Schema;
 /*
 var playlistId = req.query.playlist_id;
 var playlistURI = req.query.playlist_uri;
@@ -7,7 +18,7 @@ var deviceId = req.query.device_id;
 var accessToken = req.query.access_token;
 var refreshToken = req.query.refresh_token;
 */
-var queueSchema = new Schema({
+const queueSchema = new Schema({
     playlistId: {
         type: String,
         required: true
@@ -39,5 +50,5 @@ var queueSchema = new Schema({
 });
 
 //Export the Schemas
-var Queue = mongoose.model('Queue', queueSchema);
+const Queue    = mongoose.model('Queue', queueSchema);
 module.exports = Queue;

@@ -13,11 +13,9 @@ const express      = require('express'); // Express web server framework
 const request      = require('request'); // "Request" library
 const cors         = require('cors');
 const cookieParser = require('cookie-parser');
-
 const queue       = require('./js/queueController.js');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
-
 const stateKey      = 'spotify_auth_state';
 const accTokenKey   = 'spotify_acc_token';
 const refTokenKey   = 'spotify_ref_token';
@@ -25,7 +23,6 @@ const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
-
 
 //Cookie-Generator
 const generateRandomString = (length) => {
@@ -51,12 +48,15 @@ app.use(express.static(__dirname + '/html'))
    .use(cookieParser())
    .use(bodyParser.json());
 
-// Routing for queues
+//Routing for queues
 app.route('/queue')
    .post(queue.create)
    .get(queue.get)
    .put(queue.addSong)
    .delete(queue.delete);
+
+// Connect to database
+mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
 
 //GET: /login 
 app.get('/login', (req, res) => {
@@ -251,11 +251,6 @@ app.put('/start', (req, res) => {
         if (!error && response.statusCode === 204) { res.send('Playlist started'); }
     });  
 });
-
-
-// Connect to database
-mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
-
 
 /////////////////////////////////////////////////
 console.log('Listening on 8080');
