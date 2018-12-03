@@ -8,7 +8,10 @@
  * 
  * UF Web Apps - Fall 2018
  */ 
+const session       = require('express-session');
 
+const multer        = require('multer'); 
+const passport      = require('passport');
 const express       = require('express'); // Express web server framework
 const request       = require('request'); // "Request" library
 const cors          = require('cors');
@@ -43,12 +46,25 @@ const app = express();
 app.listen(8080);
 
 
+
 //Set html directory, cors, cookieParser
 app.use(express.static(__dirname + '/html'))
    .use(express.static(__dirname))
    .use(cors())
    .use(cookieParser())
-   .use(bodyParser.json());
+   .use(bodyParser.json())
+   .use(bodyParser.urlencoded({ extended: true }))
+   .use(session({
+    secret: 'this is the secret',
+    resave: true,
+    saveUninitialized: true
+    }))
+   .use(passport.initialize())
+   .use(passport.session());
+   
+multer();
+
+require("./app/app.js")(app);
 
 //Routing for queues
 app.route('/queue')
