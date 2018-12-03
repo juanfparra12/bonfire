@@ -123,7 +123,6 @@ exports.get = function(req, res){
             console.log(err);
             res.status(400).send(err);
         }else{
-            console.log(_id);
             res.status(200).json(queue);
         }
     });
