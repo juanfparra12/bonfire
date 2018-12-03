@@ -19,6 +19,7 @@ const bodyParser    = require('body-parser');
 const stateKey      = 'spotify_auth_state';
 const accTokenKey   = 'spotify_acc_token';
 const refTokenKey   = 'spotify_ref_token';
+const queueTokenKey = 'bonfire_queue_token';
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
@@ -55,8 +56,30 @@ app.route('/queue')
    .put(queue.addSong)
    .delete(queue.delete);
 
+// PUT: Update Queue with CreatorID, Playlist ID, Playlist URI, & Device ID
+app.put('/updateUser', queue.updateQueueInfo);
+
 // Connect to database
 mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
+
+const create_queue = (access_token, refresh_token, res, red_url) => {
+    const url = 'http://localhost:8080/queue' +
+                '?access_token=' + access_token +
+                '&refresh_token=' + refresh_token;
+
+    const options = {
+        url: url,
+        json: true
+    };
+    
+    request.post(options, (error, response, body) => {
+        if (!error && response.statusCode === 200) { 
+            console.log(body); 
+            res.cookie(queueTokenKey, body._id, { secure: false });
+            res.redirect(302, red_url); 
+        };
+    });
+}
 
 //GET: /login 
 app.get('/login', (req, res) => {
@@ -104,12 +127,13 @@ app.get('/callback', (req, res) => {
             if (!error && response.statusCode === 200) {
                 const access_token  = body.access_token; 
                 const refresh_token = body.refresh_token;
+                
 
                 //Create cookies with the tokens
                 const url = '/main.html';
                 res.cookie(refTokenKey, refresh_token, { secure: false });
                 res.cookie(accTokenKey, access_token,  { secure: false });
-                res.redirect(302, url);
+                create_queue(access_token, refresh_token, res, url);
             } 
             else { //Failed
                 const url = '/#error=invalid_token';

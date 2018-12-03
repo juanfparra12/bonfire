@@ -21,23 +21,23 @@ var refreshToken = req.query.refresh_token;
 const queueSchema = new Schema({
     playlistId: {
         type: String,
-        required: true
+        required: false
     },
     playlistURI: {
         type: String,
-        required: true
+        required: false
     },
     creator: {
         type: String,
-        required: true
+        required: false
     },
     deviceId: {
         type:String,
-        required:true
+        required: false
     },
     accessToken:{
         type: String,
-        required:true
+        required: true
     },
     refreshToken:{
         type: String,
@@ -45,7 +45,7 @@ const queueSchema = new Schema({
     },
     songs:{
         type: Array,
-        required:false
+        required: false
     }
 });
 

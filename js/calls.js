@@ -9,6 +9,16 @@
  * UF Web Apps - Fall 2018
  */ 
 
+const update_queue_user = (res) => {
+	const queue_id = getCookie('bonfire_queue_token');
+	const url      = '/updateUser?creator=' + res.id + '&id=' + queue_id;
+	$.ajax({
+        url: url,
+        method: 'PUT',
+        success: (response) => { setCookie('bonfire_user_id', res.id, 1); }
+    });
+}
+
 const get_user = (access_token, res_func) => {
 	$.ajax({
         url: 'https://api.spotify.com/v1/me',

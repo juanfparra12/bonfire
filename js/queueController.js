@@ -17,24 +17,15 @@ const Song     = require('./songSchema.js');
 var data;
 // Creates queue
 exports.create = function(req, res){
-    var name = req.query.creator;
-    var playlistId = req.query.playlist_id;
-    var playlistURI = req.query.playlist_uri;
-    var deviceId = req.query.device_id;
     var accessToken = req.query.access_token;
     var refreshToken = req.query.refresh_token;
 
-    var queueJson = 
-    {
-        "playlistId" : playlistId,
-        "playlistURI" : playlistURI,
-        "creator": name,
-        "deviceId": deviceId,
+    var queueJson = {
         "accessToken" : accessToken,
         "refreshToken" : refreshToken 
-    }
+    };
 
-    var query = Queue.where({creator:name});
+    var query = Queue.where({refreshToken: refreshToken});
     
     // Queries to find if user already has an existing queue
     query.find(function(err,queue){
@@ -63,10 +54,35 @@ exports.create = function(req, res){
 
 };
 
+// PUT: Update Queue with CreatorID, Playlist ID, Playlist URI, & Device ID
+exports.updateQueueInfo = (req,res) => {
+    var _id = req.query.id;
+    // Requires these parameters, or can be called from somewhere else
+    var creatorName = req.query.creator;
+    var playlist_id = req.query.playlist_id;
+    var playlist_uri = req.query.playlist_uri;
+    var device_id = req.query.device_id;
+    var updatedData = 
+    {
+        creator: creatorName,
+        playlistId : playlist_id,
+        playlistURI : playlist_uri,
+        deviceId : device_id
+    }
+    Queue.findOneAndUpdate({_id:_id}, {$set:updatedData}, {new:true}, (error,doc)=>{
+        if(error){
+            console.log(error);
+            res.send(error);
+        }else{
+            res.status(200).send(doc);
+        }
+    });
+}
+
 //Searches Queue by CreatorID
 exports.get = function(req, res){
-    var name = req.query.creator;
-    var query = Queue.where({creator:name});
+    var id = req.query.id;
+    var query = Queue.where({_id:id});
     query.find(function(err, queue){
         if(err){
             console.log(err);
