@@ -219,13 +219,16 @@
 	            document.getElementById('create-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		create_pl(access_token, '2227tef3f2fwrhvchu3vv7d3i', update_queue_user);
+		          		create_pl(access_token, getCookie('bonfire_user_id'), update_queue_user);
+		          		console.log('playlist id is '+ getCookie('bonfire_playlist_id'));
 	            }, false);
 	            document.getElementById('start-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		start(access_token, devlist[i].id, res_func);
 	            }, false);
+	            document.getElementById('add-track-btn'.addEventListener('click'))
+	            getCookie('bonfire_playlist_id')
 	        } 
 	      })();
 	    </script>

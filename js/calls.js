@@ -11,6 +11,7 @@
 
 const update_queue_playlist = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
+  console.log(queue_id);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
 	$.ajax({
@@ -83,13 +84,14 @@ $.ajax({
  });
 }
 
-const add_track = (access_token, track_uri, res_func) =>{
+const add_track = (access_token, track_uri, playlist_id, res_func) =>{
 $.ajax({
    url: '/add_track',
    method: 'POST',
    data: {
      'access_token': access_token,
-     'track_uri': track_uri 
+     'track_uri': track_uri,
+     'playlist_id': playlist_id  
    },
    success: (response) => { console.log(response); }
  });
