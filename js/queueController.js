@@ -138,8 +138,8 @@ exports.get = function(req, res){
 
 // Delete Queue
 exports.delete = function(req, res){
-    var creatorName = req.query.creator;
-    var query = Queue.where({creator:creatorName});
+    var id = req.query.id;
+    var query = Queue.where({_id:id});
     query.findOneAndRemove(function(err, queue){
         if(err){
             console.log(err);
@@ -156,7 +156,7 @@ exports.delete = function(req, res){
 // Update queue with songs
 // Requires CreatorID, songId, songName, and addedBy name
 exports.addSong = function(req, res){
-    var creatorName = req.query.creator;
+    var id = req.query.id;
     var songId = req.query.songId;
     var songName = req.query.songName;
     var addedBy = req.query.addedBy;
@@ -170,7 +170,7 @@ exports.addSong = function(req, res){
     );
     console.log(song);
     // // Check if player already has a playlist
-    Queue.findOne({creator:creatorName}, (err, queue) => {
+    Queue.findOne({_id:id}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
@@ -228,10 +228,10 @@ exports.playNextSong = (req, res)=>{
 
 // DELETE: Obtains next song information
 exports.deleteSong = (req, res)=>{
-    var creatorName = req.query.creator;
+    var id = req.query.id;
 
     // // Check if player already has a playlist
-    Queue.findOne({creator:creatorName}, (err, queue) => {
+    Queue.findOne({_id:id}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
