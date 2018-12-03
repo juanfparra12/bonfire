@@ -55,9 +55,13 @@
 		    	<form id = "search-form" action="/search">
   					<input type="text" id="query" value="" placeholder="Add to Queue">
   					<br>
-  					<input type="submit" value="Search">
+  					<input id = "search-btn" type="submit" value="Search">
   					<input type="submit" id="add-track-queue" value="Add to Queue">
 				</form>
+				<button id="switch-view">Switch View</button>
+			</div>
+			<div id ='search-results-container'>
+				<div class='search-results'></div>
 			</div>
 
 		</div>
@@ -139,7 +143,7 @@
 	          		// render Handlebars oauth info
 		            oauthPlaceholder.innerHTML = oauthTemplate({
 		              access_token: access_token,
-		              refresh_token: refresh_token
+		              refresh_token: refresh_token,
 		              query: query
 		            });
 					
@@ -152,22 +156,23 @@
 		          	console.log('Failed to login');
 		            $('#loggedin').hide();
 		        }
+				console.log(access_token);
+		        // document.getElementById('obtain-new-token').addEventListener('click', 
+		        //   	() => { 
+		        //   		refreshtoken(refresh_token, (res) => { access_token = res; });
+		        //   		oauthPlaceholder.innerHTML = oauthTemplate({ access_token: access_token, refresh_token: refresh_token });
+		        // }, false);
 
-		        document.getElementById('obtain-new-token').addEventListener('click', 
-		          	() => { 
-		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		oauthPlaceholder.innerHTML = oauthTemplate({ access_token: access_token, refresh_token: refresh_token });
-		        }, false);
+	          	// document.getElementById('obtain-avail-devices').addEventListener('click', 
+	          	// 	() => {
+		        //   		
+		        //   		avail_dev(access_token, list_devices);
+	            // }, false);
 
-	          	document.getElementById('obtain-avail-devices').addEventListener('click', 
-	          		() => {
-		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		avail_dev(access_token, list_devices);
-	            }, false);
-
-	            document.getElementById('search-form').addEventListener('click',
+	            document.getElementById('search-btn').addEventListener('click',
 	            	()=>{
-	            		refreshtoken(refresh_token, (res) => { access_token = res; });
+						refreshtoken(refresh_token, (res) => { access_token = res; });
+						var query = document.getElementById('query').value;
 	            		search(access_token, query);
 	            	}, false);
 	            document.getElementById('add-track-queue').addEventListener('click',
@@ -176,7 +181,7 @@
 	            		add_track(access_token, track_uri, res_func);
 	            	}, false);
 	        } 
-	      })();
+	      })()	;
 	    </script>
 
 	</body>
