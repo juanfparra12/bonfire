@@ -71,19 +71,42 @@ const avail_dev = (access_token, res_func) => {
 
 }
 
-// const search = (access_token, query, res_func) =>{
-//   $.ajax(
-//     {
-//       type: "GET"
-//       url: '/search',
-//         data:{
-//           'access_token': access_token,
-//           'query': query
-//         },
-//         fail: () => { console.log('fail'); }
-//     }
-//   ).done((data) => { res_func(data.query); });
-// }
+const create_pl = (access_token, user_id, res_func) =>{
+$.ajax({
+   url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'user_id': user_id 
+   },
+   success: (response) => {res_func(response);},
+ });
+}
+
+const add_track = (access_token, track_uri, res_func) =>{
+$.ajax({
+   url: '/add_track',
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'track_uri': track_uri 
+   },
+   success: (response) => { console.log(response); }
+ });
+}
+
+const start = (access_token, device_id, playlist_uri, res_func) =>{
+$.ajax({
+   url: '/start',
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'device_id': device_id,
+     'playlist_uri': playlist_uri 
+   },
+   success: (response) => { console.log(response); }
+ });
+}
 
 
 
