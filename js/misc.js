@@ -48,3 +48,10 @@ const list_devices = (devlist) => {
     dev_list += '</ul>';
         document.getElementById('device_list').innerHTML = dev_list;    
 }
+
+// changing string for query example
+function stringToQuery() {
+    var str = document.getElementById("query").value;
+    var res = encodeURI(str);
+    return res;
+}

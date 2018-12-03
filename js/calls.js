@@ -43,3 +43,20 @@ const avail_dev = (access_token, res_func) => {
   	).done((data) => { res_func(data.devices); });
 
 }
+
+// const search = (access_token, query, res_func) =>{
+//   $.ajax(
+//     {
+//       type: "GET"
+//       url: '/search',
+//         data:{
+//           'access_token': access_token,
+//           'query': query
+//         },
+//         fail: () => { console.log('fail'); }
+//     }
+//   ).done((data) => { res_func(data.query); });
+// }
+
+
+
