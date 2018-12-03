@@ -1,0 +1,14 @@
+*{
+    /*defaults*/
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+}
+body{
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #FF7F50;
+    overflow-x: hidden;
+}

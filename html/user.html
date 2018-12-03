@@ -32,7 +32,6 @@
                 	<img id="settings-icon" src="/Images/settings.png">
                 	Settings
             	</li>
-                <li class="headerButton">Key: </li>
             </ul>
     </div>
 	<body>
@@ -43,54 +42,20 @@
 		    	<div id="user-profile"></div>
 		        
 		        <div id="oauth"></div>
-
-		        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-		        <h3>available devices</h3>
-		        <div id = "device_list"></div>
-		        <button class="btn btn-default" id="obtain-avail-devices">show available devices</button>
-
+		    </div>
+		    <div class="light-bonfire-login">
+		    	<form id = "login-key-form" action="">
+  					<br>
+  					<input type="text" id="key" value=""placeholder="Enter Key ID" >
+  					<br>
+  					<input type="submit" id="submit-button" value="Submit">
+				</form>		    	
 		    </div>
 		     <div class="creator-controls">
-		    	<h2>Number of Songs Added by User?</h2>
-   
-      			<div class="""slidecontainer">
-				  <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
-				  <p>Value: <span id="demo"></span></p>
-				</div>
-
-		    	<h2>Users Can Skip Songs?</h2>
-		    	<form action="">
-		    		<form>
-					    <label class="radio">
-					      <input type="radio" name="skip-song" checked>Yes
-					    </label>
-					    <label class="radio">
-					      <input type="radio" name="skip-song">No
-					    </label>
-					  </form>
-				</form>
-
-		    	<h2>Users Can Delete Songs?</h2>
-		    	<form action="">
-		    		<form>
-					    <label class="radio">
-					      <input type="radio" name="delete-song" checked>Yes
-					    </label>
-					    <label class="radio">
-					      <input type="radio" name="delete-song">No
-					    </label>
-					  </form>
-				</form>
-		    	<h2>Users Can Shuffle Songs?</h2>
-		    	<form action="">
-		    		<form>
-					    <label class="radio">
-					      <input type="radio" name="shuffle-song" checked>Yes
-					    </label>
-					    <label class="radio">
-					      <input type="radio" name="shuffle-song">No
-					    </label>
-					  </form>
+		    	<form id = "search-form" action="/search">
+  					<input type="text" id="query" value="" placeholder="Add to Queue">
+  					<br>
+  					<input type="submit" value="Search">
 				</form>
 			</div>
 
@@ -99,13 +64,13 @@
 
 		 <!-- HEADER INFO -->
 	    <script id="header-template" type="text/x-handlebars-template">
-		    {{display_name}}
+		    <li class="headerButton">{{display_name}}</li>
 		</script>
 		<!-- END HEADER INFO -->
 
 		<!-- USER INFO HANDLEBAR TEMPLATE -->
 		<script id="user-profile-template" type="text/x-handlebars-template">
-		    <h1>Logged in as {{display_name}}</h1>
+		    <h1>{{display_name}}'s Playlist</h1>
 		    <div class="media">
 		        <div class="pull-left">
 		          	<img class="media-object" width="150" src="{{images.0.url}}" />
@@ -136,17 +101,7 @@
 	    </script>
 	    <!-- END TOKEN -->
 
-	    <!-- SLIDER -->
-	    <script>
-			var slider = document.getElementById("myRange");
-			var output = document.getElementById("demo");
-			output.innerHTML = slider.value;
-
-			slider.oninput = function() {
-			  output.innerHTML = this.value;
-			}
-		</script>
-		<!-- END SLIDER -->
+	   
 
 
 	    <!--for the handlebars script templates-->
@@ -184,6 +139,7 @@
 		            oauthPlaceholder.innerHTML = oauthTemplate({
 		              access_token: access_token,
 		              refresh_token: refresh_token
+		              query: query
 		            });
 					
 		            get_user(access_token, (res) => { userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
@@ -207,8 +163,15 @@
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		avail_dev(access_token, list_devices);
 	            }, false);
+
+	            document.getElementById('search-form').addEventListener('click',
+	            	()=>{
+	            		query(query, (res) =>{query = res});
+	            		search(access_token, query);
+	            	}, false);
 	        } 
 	      })();
 	    </script>
+
 	</body>
 </html>
