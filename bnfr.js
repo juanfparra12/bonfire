@@ -14,6 +14,10 @@ const request      = require('request'); // "Request" library
 const cors         = require('cors');
 const cookieParser = require('cookie-parser');
 
+const queue       = require('./js/queueController.js');
+const mongoose     = require('mongoose');
+const bodyParser   = require('body-parser');
+
 const stateKey      = 'spotify_auth_state';
 const accTokenKey   = 'spotify_acc_token';
 const refTokenKey   = 'spotify_ref_token';
@@ -44,9 +48,15 @@ app.listen(8080);
 app.use(express.static(__dirname + '/html'))
    .use(express.static(__dirname))
    .use(cors())
-   .use(cookieParser());
+   .use(cookieParser())
+   .use(bodyParser.json());
 
-
+// Routing for queues
+app.route('/queue')
+   .post(queue.create)
+   .get(queue.get)
+   .put(queue.addSong)
+   .delete(queue.delete);
 
 //GET: /login 
 app.get('/login', (req, res) => {
@@ -243,7 +253,8 @@ app.put('/start', (req, res) => {
 });
 
 
-
+// Connect to database
+mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
 
 
 /////////////////////////////////////////////////
