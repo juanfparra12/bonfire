@@ -27,6 +27,7 @@ const update_queue_playlist = (res) => {
 }
 
 const update_queue_user = (res) => {
+
 	const queue_id = getCookie('bonfire_queue_id');
 	const url      = '/queue/update/creator?creator=' + res.id + '&id=' + queue_id;
 	$.ajax({
@@ -75,8 +76,8 @@ const search = (access_token, user_id, res_func) =>{
 $.ajax({
    url: '/search',
    data: {
-     access_token: access_token,
-     query: query 
+     'access_token': access_token,
+     'query': query 
    },
    success: (response) => { res_func(response); }
  });
@@ -84,13 +85,13 @@ $.ajax({
 
 const create_pl = (access_token, user_id, res_func) =>{
 $.ajax({
-   url: '/create_pl',
+   url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
    method: 'POST',
    data: {
-     access_token: access_token,
-     user_id: user_id 
+     'access_token': access_token,
+     'user_id': user_id 
    },
-   success: (response) => { res_func(response); }
+   success: (response) => {res_func(response);},
  });
 }
 
@@ -99,8 +100,8 @@ $.ajax({
    url: '/add_track',
    method: 'POST',
    data: {
-     access_token: access_token,
-     track_uri: track_uri 
+     'access_token': access_token,
+     'track_uri': track_uri 
    },
    success: (response) => { console.log(response); }
  });
@@ -111,17 +112,17 @@ $.ajax({
    url: '/start',
    method: 'POST',
    data: {
-     access_token: access_token,
-     device_id: device_id,
-     playlist_uri: playlist_uri 
+     'access_token': access_token,
+     'device_id': device_id,
+     'playlist_uri': playlist_uri 
    },
    success: (response) => { console.log(response); }
  });
 }
 
-var t = null;
-$.getJSON('http://localhost:8080/search?access_token=BQBpppr33JJHQObwpuIgNJuc9jTojgSoHKxLLdRjt11LR140sG8imThbdEPk8ONU0EUu-4zsKCXm3Ncr6Ukd18G_Q-TFG6070KGRJQ4AXTPG6cmFF1DjfixxQEgMUNy3fC41Tofjwu5YfmhlpmWpU6JXxOMnTbJJXZ2NyehJuIjP8Ap-ZagM0i1EoYrVBnEUeRxF0jrbDGZ-c89dn1k7cj1oI-_WR8zueg4nGSyRAoOI92lqLzrlgRHrfgQBE4EzkXIxXVA-bL2rE4ngoONg54hAw_aB6aCoa2g&query=Gold%20Digger'
-  ,function(data){
-    for(var i = 0; i<data.tracks.items.length; i++)
-      alert(data.tracks.items[i].album.name);
-  });
+// var t = null;
+// $.getJSON('http://localhost:8080/search?access_token=BQA5QGP8rkelbaoxS_coQbapFj_BNSwNs9Hk6JbxGZjZHtcme14OKv8A3cWlT65QSxoP416YD2_BoGQvwbY2VUC2COIgc8BLDMeBsuT9QNC7ku5WMJwWhCQUhaI-R3R9SqB7Qpy5trZCE31u9420qu8aaLcsnXDo1nFaPCYdQuFVfwrK9icOMbP_iLvHq7Ie9G-wuEqqQ5wjeo8rKRIJrDl1iZJIRulHu7S9rsKnD9KftOQDvUTfoNdSH7QvgZJN9E0LRIbcvf3UtppYCiPtX_XpJgS7lYM9MZ0&query=Gold%20Digger'
+//   ,function(data){
+//     for(var i = 0; i<data.tracks.items.length; i++)
+//       alert(data.tracks.items[i].name);
+//   });

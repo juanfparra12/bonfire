@@ -123,7 +123,8 @@
 			            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
 			            <dt>Id</dt><dd>{{id}}</dd>
 			            <dt>Email</dt><dd>{{email}}</dd>
-			            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
+			            <dt>Spotify URI</dt><dd><a 
+			            	href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
 			            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
 			            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
 			            <dt>Country</dt><dd>{{country}}</dd>
@@ -180,6 +181,7 @@
 	        //Token acquisition
 	        var params = getHashParams(); //get the tokens from the auth.
 	        var access_token = getCookie('spotify_acc_token');//acc_token from cookie,
+	        var auth_token = getCookie('spotify_auth_state');
 	        const refresh_token = getCookie('spotify_ref_token'); //ref_token from cookie,
 	        const error = params.error;
 
@@ -220,12 +222,12 @@
 	            document.getElementById('create-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		create_pl(access_token, getCookie, res_func());
+		          		create_pl(access_token, '2227tef3f2fwrhvchu3vv7d3i', update_queue_user);
 	            }, false);
 	            document.getElementById('start-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		start(access_token, devlist[i].id, res_func());
+		          		start(access_token, devlist[i].id, res_func);
 	            }, false);
 	        } 
 	      })();
