@@ -79,7 +79,7 @@ app.put('/queue/update/playlist_uri', queue.updatePlaylistURI);
 app.put('/queue/update/device_id', queue.updateDeviceId);
 
 // Connect to database
-mongoose.connect('mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue');
+mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
 
 const create_queue = (access_token, refresh_token, res, red_url) => {
     const url = 'http://localhost:8080/queue' +
