@@ -9,13 +9,13 @@
  * UF Web Apps - Fall 2018
  */ 
 
-const express      = require('express'); // Express web server framework
-const request      = require('request'); // "Request" library
-const cors         = require('cors');
-const cookieParser = require('cookie-parser');
-const queue       = require('./js/queueController.js');
-const mongoose     = require('mongoose');
-const bodyParser   = require('body-parser');
+const express       = require('express'); // Express web server framework
+const request       = require('request'); // "Request" library
+const cors          = require('cors');
+const cookieParser  = require('cookie-parser');
+const queue         = require('./js/queueController.js');
+const mongoose      = require('mongoose');
+const bodyParser    = require('body-parser');
 const stateKey      = 'spotify_auth_state';
 const accTokenKey   = 'spotify_acc_token';
 const refTokenKey   = 'spotify_ref_token';
