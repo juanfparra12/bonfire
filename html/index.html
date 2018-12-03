@@ -15,8 +15,51 @@
 		<title>Bonfire - Live Music Queue</title>
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 		<link rel = "stylesheet" href="style.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+        <!-- <link href="css/style.css" rel="stylesheet"/> -->
+        <script src="js-2/jquery-1.11.2.js"></script>
+        <script src="js-2/bootstrap.js"></script>
+        <script src="js-2/angular.js"></script>
+        <script src="js-2/angular-route.js"></script>
+        <script src="app.js"></script>
+        <script src="config.js"></script>
+        <script src="home/home.controller.js"></script>
+        <script src="login/login.controller.js"></script>
+        <script src="register/register.controller.js"></script>
+        <script src="profile/profile.controller.js"></script>
+        <script src="nav/nav.controller.js"></script>
+        <script src="admin/admin.controller.js"></script>
+        <script src="services/user.services.client.js"></script>
 	</head>
-	<body>
+	
+		<body ng-app="PassportApp">
+
+            <nav ng-controller="NavCtrl" class="navbar navbar-light" style="background-color: #B6B9EF;">
+                  <a class="navbar-brand" >
+                    <img src="bonfire-img copy.png" height="70" alt="">
+                  </a>
+                  <a class="btn btn-primary btn-lg" href="#home"  role="button">Home</a> 
+                  <span ng-show="!currentUser">
+                      <a class="btn btn-primary btn-lg" href="#login"  role="button">Login</a> 
+                      <a class="btn btn-primary btn-lg" href="#register"  role="button">Register</a> 
+                  </span>
+                  <span ng-show="currentUser">
+                      <a class="btn btn-primary btn-lg" href="#profile"  role="button">Profile</a> 
+                      <span ng-show="currentUser.roles.indexOf('admin') != -1">
+                      <a class="btn btn-primary btn-lg" href="#admin"  role="button">Admin</a> 
+                      </span>
+                      <a  class="btn btn-primary btn-lg" href="#logout" role="button" onClick="window.location.href=window.location.href" ng-click="logout()" >Logout</a>
+                  </span>
+                    
+            
+            </nav>
+        <div class="container">
+            
+            <div ng-view>
+            </div>
+        </div>
+    
 		<h1>BONFIRE</h1>
 		<a href = "/login" class="btn btn-primary">light bonfire</a>
 		<h2> or</h2>

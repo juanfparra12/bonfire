@@ -20,12 +20,10 @@ exports.create = function(req, res){
     var accessToken = req.query.access_token;
     var refreshToken = req.query.refresh_token;
 
-    var queueJson = 
-    {
-        // "creator": name,
+    var queueJson = {
         "accessToken" : accessToken,
         "refreshToken" : refreshToken 
-    }
+    };
 
     var query = Queue.where({refreshToken:refreshToken});
     
@@ -55,9 +53,6 @@ exports.create = function(req, res){
     });
 
 };
-
-
-
 
 // PUT: Update Queue with CreatorID
 exports.updateCreator = (req,res) => {
@@ -119,12 +114,10 @@ exports.updateDeviceId = (req,res) => {
     });
 }
 
-
-
 //Searches Queue by CreatorID
 exports.get = function(req, res){
-    var _id = req.query.id;
-    var query = Queue.where({_id:_id});
+    var id = req.query.id;
+    var query = Queue.where({_id:id});
     query.find(function(err, queue){
         if(err){
             console.log(err);

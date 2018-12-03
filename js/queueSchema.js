@@ -37,7 +37,7 @@ const queueSchema = new Schema({
     },
     accessToken:{
         type: String,
-        required:true
+        required: true
     },
     refreshToken:{
         type: String,
@@ -45,7 +45,7 @@ const queueSchema = new Schema({
     },
     songs:{
         type: Array,
-        required:false
+        required: false
     }
 });
 

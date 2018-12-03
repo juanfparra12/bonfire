@@ -185,10 +185,17 @@
 		              access_token: access_token,
 		              refresh_token: refresh_token
 		            });
-					
-		            get_user(access_token, (res) => { userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
-		            	creatorPlaceholder.innerHTML = creatorTemplate(res);
-		            })
+
+		            get_user(access_token, (res) => { 
+		            	userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
+		            	creatorPlaceholder.innerHTML     = creatorTemplate(res);
+		            });
+
+		            refreshtoken(refresh_token, (res) => { access_token = res; });
+		            get_user(access_token, update_queue_user);
+		            
+
+
 		            $('#loggedin').show();
 	          	} 
 		        else {
