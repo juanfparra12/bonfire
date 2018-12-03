@@ -9,6 +9,23 @@
  * UF Web Apps - Fall 2018
  */ 
 
+const update_queue_playlist = (res) => {
+	const queue_id = getCookie('bonfire_queue_id');
+	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
+	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
+	$.ajax({
+        url: url_id,
+        method: 'PUT',
+        success: (response) => { setCookie('bonfire_playlist_id', res.id, 1); console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
+    });
+
+    $.ajax({
+        url: url_uri,
+        method: 'PUT',
+        success: (response) => { setCookie('bonfire_playlist_uri', res.uri, 1); console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
+    });
+}
+
 const update_queue_user = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
 	const url      = '/queue/update/creator?creator=' + res.id + '&id=' + queue_id;
