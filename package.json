@@ -4,6 +4,7 @@
   "description": "live music-queue app",
   "main": "bnfr.js",
   "scripts": {
+    "start": "node bnfr.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": [
