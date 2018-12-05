@@ -12,7 +12,7 @@
 const mongoose = require('mongoose');
 const Queue    = require('./queueSchema.js');
 const Song     = require('./songSchema.js');
-
+const bnfr     = require('../bnfr.js');
 
 var data;
 // Creates queue
@@ -114,7 +114,11 @@ exports.updateDeviceId = (req,res) => {
     });
 }
 
-//Searches Queue by CreatorID
+// exports.getQueueId = function(req, res){
+    
+// }
+
+//GET: Searches Queue by _id
 exports.get = function(req, res){
     var id = req.query.id;
     var query = Queue.where({_id:id});
@@ -128,7 +132,7 @@ exports.get = function(req, res){
     });
 }
 
-// Delete Queue
+//DELETE: Delete Queue
 exports.delete = function(req, res){
     var id = req.query.id;
     var query = Queue.where({_id:id});

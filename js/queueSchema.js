@@ -19,6 +19,10 @@ var accessToken = req.query.access_token;
 var refreshToken = req.query.refresh_token;
 */
 const queueSchema = new Schema({
+    queueId: {
+        type: String,
+        require: false
+    },
     playlistId: {
         type: String,
         required: false
