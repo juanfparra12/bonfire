@@ -84,9 +84,10 @@ $.ajax({
  });
 }
 
+ // stringToQuery(track_uri, true)
 const add_track = (access_token, track_uri, playlist_id, res_func) =>{
 $.ajax({
-   url: '/add_track',
+   url: '/add_track?access_token=' + access_token + '&track_uri=' +'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78' + '&playlist_id=' + getCookie('bonfire_playlist_id'),
    method: 'POST',
    data: {
      'access_token': access_token,

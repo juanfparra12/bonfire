@@ -56,7 +56,7 @@
   					<input type="text" id="query" value="" placeholder="Add to Queue">
   					<br>
 					<input id = "search-btn" type="submit" value="Search">
-					<input type="submit" id="add-track-queue" value="Add to Queue">
+					<button type="button" class="btn btn-secondary btn-lg" id="add-track-btn">Add track</button>
 				</form>
 				<button id="switch-view">Switch View</button>
 				</div>
@@ -165,12 +165,12 @@
 						console.log("query", query);
 	            		search(access_token, query);
 	            	}, false);
-	            document.getElementById('add-track-queue').addEventListener('click',
+	            document.getElementById('add-track-btn').addEventListener('click',
 	            	()=>{
-	            		refreshtoken(refresh_token, (res) => { access_token = res; });
-	            		add_track(access_token, track_uri, res_func);
-	            	}, false);
-	        } 
+	            		refreshtoken(refresh_token, (res) => {access_token = res;});
+	            		add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
+	            	},false);
+	        }  
 	      })();
 	    </script>
 
