@@ -81,6 +81,7 @@ app.put('/queue/update/creator', queue.updateCreator);
 app.put('/queue/update/playlist_id', queue.updatePlaylistId);
 app.put('/queue/update/playlist_uri', queue.updatePlaylistURI);
 app.put('/queue/update/device_id', queue.updateDeviceId);
+app.put('/queue/update/queue_id', queue.updateQueueId);
 
 // SONG Controller
 app.get('/queue/songs', queue.playNextSong);
@@ -102,10 +103,12 @@ const create_queue = (access_token, refresh_token, res, red_url) => {
     request.post(options, (error, response, body) => {
         if (!error && response.statusCode === 200) { 
             console.log(body); 
-            res.cookie(queueIdKey, body._id, { secure: false });
+            res.cookie(queueIdKey, body.queueId, { secure: false });
             res.redirect(302, red_url); 
         };
     });
+
+
 }
 
 const update_queue_dev_id = (dev_id, queue_id) => {
@@ -232,6 +235,7 @@ app.post('/create_pl', (req, res) => {
     const access_token = req.query.access_token;
     const user_id      = req.query.user_id;
 
+    
     const options      = {
         url: 'https://api.spotify.com/v1/users/'+ user_id +'/playlists',
         headers: {
