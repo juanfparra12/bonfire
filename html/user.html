@@ -162,7 +162,6 @@
 	            	()=>{
 	            		refreshtoken(refresh_token, (res) => { access_token = res; });
 						var query = document.getElementById('query').value;
-						console.log("query", query);
 	            		search(access_token, query);
 	            	}, false);
 	            document.getElementById('add-track-btn').addEventListener('click',

@@ -84,15 +84,19 @@ $.ajax({
  });
 }
 
- // stringToQuery(track_uri, true)
 const add_track = (access_token, track_uri, playlist_id, res_func) =>{
-$.ajax({
-   url: '/add_track?access_token=' + access_token + '&track_uri=' +'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78' + '&playlist_id=' + getCookie('bonfire_playlist_id'),
-   method: 'POST',
-   data: {
-     'access_token': access_token,
-     'track_uri': track_uri,
-     'playlist_id': playlist_id  
+    console.log("TRACK _ U R I _ 1  1 1", track_uri);
+
+    track_uri = stringToQuery(track_uri, false);
+    console.log("TRACK _ U R I _ 2 2 2", track_uri);
+
+    $.ajax({
+        url: '/add_track?access_token=' + access_token + '&track_uri=' + track_uri + '&playlist_id=' + getCookie('bonfire_playlist_id'),
+        method: 'POST',
+        data: {
+            'access_token': access_token,
+            'track_uri': track_uri,
+            'playlist_id': playlist_id  
    },
    success: (response) => { console.log(response); }
  });
@@ -120,7 +124,7 @@ const refresh_token = getCookie('spotify_ref_token');
 const search = (access_token, query) =>{
     var url = '/search' +
     '?access_token=' + access_token + 
-    '&query=' + stringToQuery(query);
+    '&query=' + stringToQuery(query, true);
     console.log(url);
    $.ajax(
     {
@@ -139,13 +143,13 @@ const search = (access_token, query) =>{
       for(var i = 0; i < data.tracks.items.length; i++){
         if(view){  
             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var dataURI = data.tracks.items[i].uri;
+            var track_uri = data.tracks.items[i].uri;
             var results = document.createElement('div');
             var para = document.createElement('p');
             var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
             para.appendChild(name);
             results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + data.tracks.items[i].uri);
+            var uri = document.createTextNode("Track URI: " + track_uri);
             para.appendChild(uri);
             results.appendChild(para);
             var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
@@ -156,21 +160,13 @@ const search = (access_token, query) =>{
             img.src = img_url;
             img.className = "search-results-image";
             results.appendChild(img);
-             var addBtn = document.createElement('button');
-            var btnText = document.createTextNode("Add Track");
-            addBtn.appendChild(btnText);
-            addBtn.addEventListener("click",
-                ()=>{
-                    console.log(dataURI);
-                    console.log(access_token);
-                }, false
-            );
-            results.appendChild(addBtn);
+            
+            results.appendChild(addTrackBtn(access_token, track_uri, getCookie('bonfire_playlist_id')));
             results.className = 'search-results';
          }
         else{
             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var dataURI = data.tracks.items[i].uri;
+            var track_uri = data.tracks.items[i].uri;
             var results = document.createElement('div');
             var para = document.createElement('p');
             var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
@@ -202,5 +198,19 @@ const search = (access_token, query) =>{
 			parentDiv.removeChild(parentDiv.firstChild);
 		}
     };
+
+    var addTrackBtn = function(access_token, track_uri, playlist_id){
+        var addBtn = document.createElement('button');
+        var btnText = document.createTextNode("Add Track");
+        addBtn.appendChild(btnText);
+            addBtn.addEventListener("click",
+                ()=>{
+                    add_track(access_token, track_uri, playlist_id );
+                    console.log("Adding track", track_uri);
+                    console.log
+                }, false
+            );
+        return addBtn;
+    }
 }
 
