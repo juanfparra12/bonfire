@@ -9,6 +9,7 @@
  * UF Web Apps - Fall 2018
  */ 
 
+
 const update_queue_playlist = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
     console.log(queue_id);
@@ -70,24 +71,42 @@ const refreshtoken = (refresh_token, res_func) => {
     .done( (data) => { res_func(data.access_token); } );
 }
 
+// Creating playlist checks if playlist related to the bonfire already exists.
+// If not, it creates a playlist.
+// If it already exists, it just updates the key if button is pressed
 const create_pl = (access_token, user_id, res_func) =>{
-$.ajax({
-   url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
-   method: 'POST',
-   data: {
-     'access_token': access_token,
-     'user_id': user_id 
-   },
-   success: (response) => {res_func(response);},
- });
+
+    // Update playlist id
+    var old_queue_id = getCookie('bonfire_queue_id');
+    $.ajax({
+    url: '/queue/update/queue_id?refreshToken=' + getCookie('spotify_ref_token'),
+    method: 'PUT',
+    data:{
+    },
+    success: (response) => {
+        setCookie('bonfire_queue_id', response.queueId, 1); 
+        document.getElementById("keyContainer").innerHTML = "Key: " + getCookie('bonfire_queue_id'); 
+        
+        // Checks if playlist created by bonfire already exists or not
+        if(response.playlistId == null){
+            $.ajax({
+                url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
+                method: 'POST',
+                data: {
+                    'access_token': access_token,
+                    'user_id': user_id 
+                },
+                success: (response) => {res_func(response);},
+            });
+        }else console.log("playlist is an already existing playlist");
+    }
+    });
+    
+   
 }
 
 const add_track = (access_token, track_uri, playlist_id, res_func) =>{
-    console.log("TRACK _ U R I _ 1  1 1", track_uri);
-
     track_uri = stringToQuery(track_uri, false);
-    console.log("TRACK _ U R I _ 2 2 2", track_uri);
-
     $.ajax({
         url: '/add_track?access_token=' + access_token + '&track_uri=' + track_uri + '&playlist_id=' + getCookie('bonfire_playlist_id'),
         method: 'POST',
@@ -141,9 +160,10 @@ const search = (access_token, query) =>{
       removeChildNodes(resultsContainer);
       
       for(var i = 0; i < data.tracks.items.length; i++){
+        console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
+        var track_uri = data.tracks.items[i].uri;
+
         if(view){  
-            console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var track_uri = data.tracks.items[i].uri;
             var results = document.createElement('div');
             var para = document.createElement('p');
             var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
@@ -166,39 +186,32 @@ const search = (access_token, query) =>{
          }
         else{
             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var track_uri = data.tracks.items[i].uri;
             var results = document.createElement('div');
             var para = document.createElement('p');
             var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
             para.appendChild(name);
             results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + data.tracks.items[i].uri);
+            var uri = document.createTextNode("Track URI: " + track_uri);
             para.appendChild(uri);
             results.appendChild(para);
             var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
             para.appendChild(id);
             results.appendChild(para);
-             var addBtn = document.createElement('button');
-            var btnText = document.createTextNode("Add Track");
-            addBtn.appendChild(btnText);
-            addBtn.addEventListener("click",
-                ()=>{
-                    console.log(access_token);
-                }, false
-            );
-            results.appendChild(addBtn);
+            results.appendChild(addTrackBtn(access_token, track_uri, getCookie('bonfire_playlist_id')));
             results.className = 'search-results-list';
     
         }
         resultsContainer.appendChild(results);
        }
     });
+    // Recursively removes child nodes in the html
      var removeChildNodes = function(parentDiv){
 		while (parentDiv.hasChildNodes()) {
 			parentDiv.removeChild(parentDiv.firstChild);
 		}
     };
 
+    // Add track button functionality for each search result
     var addTrackBtn = function(access_token, track_uri, playlist_id){
         var addBtn = document.createElement('button');
         var btnText = document.createTextNode("Add Track");
