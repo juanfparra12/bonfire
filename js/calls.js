@@ -165,21 +165,27 @@ const search = (access_token, query) =>{
 
         if(view){  
             var results = document.createElement('div');
-            var para = document.createElement('p');
-            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-            para.appendChild(name);
-            results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + track_uri);
-            para.appendChild(uri);
-            results.appendChild(para);
-            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-            para.appendChild(id);
-            results.appendChild(para);
              var img_url = data.tracks.items[i].album.images[0].url;
             var img = document.createElement('img');
             img.src = img_url;
             img.className = "search-results-image";
             results.appendChild(img);
+            var para = document.createElement('p');
+            var name = document.createTextNode(data.tracks.items[i].name);
+            para.appendChild(name);
+            results.appendChild(para);
+             var para = document.createElement('p');
+            var artist = document.createTextNode(data.tracks.items[i].artists[0].name);
+            para.appendChild(artist);
+            results.appendChild(para);
+            
+            // var uri = document.createTextNode("Track URI: " + track_uri);
+            // para.appendChild(uri);
+            // results.appendChild(para);
+            // var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
+            // para.appendChild(id);
+            // results.appendChild(para);
+            
             
             results.appendChild(addTrackBtn(access_token, track_uri, getCookie('bonfire_playlist_id')));
             results.className = 'search-results';
