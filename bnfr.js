@@ -26,7 +26,7 @@ const queueIdKey    = 'bonfire_queue_id';
 const devIdKey      = 'bonfire_dev_id'; 
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
-const redirect_uri  = 'http://localhost:8080/callback';   // redirect uri
+const redirect_uri  = 'http://the-bonfire-app.herokuapp.com/callback';   // redirect uri
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
@@ -45,6 +45,8 @@ exports.generateRandomString = generateRandomString;
 //Create server
 const app = express();
 app.listen(process.env.PORT || 8080);
+
+
 
 //Set html directory, cors, cookieParser
 app.use(express.static(__dirname + '/html'))
@@ -79,6 +81,7 @@ app.put('/queue/update/creator', queue.updateCreator);
 app.put('/queue/update/playlist_id', queue.updatePlaylistId);
 app.put('/queue/update/playlist_uri', queue.updatePlaylistURI);
 app.put('/queue/update/device_id', queue.updateDeviceId);
+app.put('/queue/update/queue_id', queue.updateQueueId);
 
 // SONG Controller
 app.get('/queue/songs', queue.playNextSong);
@@ -88,7 +91,7 @@ app.delete('/queue/songs', queue.deleteSong);
 mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
 
 const create_queue = (access_token, refresh_token, res, red_url) => {
-    const url = 'http://localhost:8080/queue' +
+    const url = 'http://the-bonfire-app.herokuapp.com/queue' +
                 '?access_token='  + access_token +
                 '&refresh_token=' + refresh_token;
 
@@ -100,10 +103,12 @@ const create_queue = (access_token, refresh_token, res, red_url) => {
     request.post(options, (error, response, body) => {
         if (!error && response.statusCode === 200) { 
             console.log(body); 
-            res.cookie(queueIdKey, body._id, { secure: false });
+            res.cookie(queueIdKey, body.queueId, { secure: false });
             res.redirect(302, red_url); 
         };
     });
+
+
 }
 
 //GET: /login 
@@ -213,6 +218,7 @@ app.post('/create_pl', (req, res) => {
     const access_token = req.query.access_token;
     const user_id      = req.query.user_id;
 
+    
     const options      = {
         url: 'https://api.spotify.com/v1/users/'+ user_id +'/playlists',
         headers: {
