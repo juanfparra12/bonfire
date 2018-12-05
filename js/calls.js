@@ -11,6 +11,7 @@
 
 const update_queue_playlist = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
+  console.log(queue_id);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
 	$.ajax({
@@ -71,18 +72,43 @@ const avail_dev = (access_token, res_func) => {
 
 }
 
-const create_playlist = (access_token, user_id, res_func) =>{
-    $.ajax({
-        type:"POST",
-        url:'/create_pl',
-        data:{
-            'access_token' : access_token,
-            'user_id' : user_id
-        },
-        success : () => {res_func(user_id)}
-    });
+const create_pl = (access_token, user_id, res_func) =>{
+$.ajax({
+   url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'user_id': user_id 
+   },
+   success: (response) => {res_func(response);},
+ });
 }
 
+const add_track = (access_token, track_uri, playlist_id, res_func) =>{
+$.ajax({
+   url: '/add_track',
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'track_uri': track_uri,
+     'playlist_id': playlist_id  
+   },
+   success: (response) => { console.log(response); }
+ });
+}
+
+const start = (access_token, device_id, playlist_uri, res_func) =>{
+$.ajax({
+   url: '/start',
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'device_id': device_id,
+     'playlist_uri': playlist_uri 
+   },
+   success: (response) => { console.log(response); }
+ });
+}
 
 var view = true;
 var viewSwitch = document.getElementById('switch-view');
@@ -124,26 +150,22 @@ const search = (access_token, query) =>{
             var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
             para.appendChild(id);
             results.appendChild(para);
-
-            var img_url = data.tracks.items[i].album.images[0].url;
+             var img_url = data.tracks.items[i].album.images[0].url;
             var img = document.createElement('img');
             img.src = img_url;
             img.className = "search-results-image";
             results.appendChild(img);
-
-            var addBtn = document.createElement('button');
+             var addBtn = document.createElement('button');
             var btnText = document.createTextNode("Add Track");
             addBtn.appendChild(btnText);
             addBtn.addEventListener("click",
                 ()=>{
-                    refreshtoken(refresh_token, (res) => { access_token = res; });
-                    console.log(access_token    );
+                    console.log(access_token);
                 }, false
             );
             results.appendChild(addBtn);
             results.className = 'search-results';
-
-        }
+         }
         else{
             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
             var dataURI = data.tracks.items[i].uri;
@@ -158,15 +180,12 @@ const search = (access_token, query) =>{
             var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
             para.appendChild(id);
             results.appendChild(para);
-
-
-            var addBtn = document.createElement('button');
+             var addBtn = document.createElement('button');
             var btnText = document.createTextNode("Add Track");
             addBtn.appendChild(btnText);
             addBtn.addEventListener("click",
                 ()=>{
-                    refreshtoken(refresh_token, (res) => { access_token = res; });
-                    console.log(access_token    );
+                    console.log(access_token);
                 }, false
             );
             results.appendChild(addBtn);
@@ -174,16 +193,12 @@ const search = (access_token, query) =>{
     
         }
         resultsContainer.appendChild(results);
-
-      }
+       }
     });
-
-    var removeChildNodes = function(parentDiv){
+     var removeChildNodes = function(parentDiv){
 		while (parentDiv.hasChildNodes()) {
 			parentDiv.removeChild(parentDiv.firstChild);
 		}
     };
 }
-
-
 

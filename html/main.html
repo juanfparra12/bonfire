@@ -12,10 +12,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel = "stylesheet" href="creator-style.css">
-		<!-- <link rel = "stylesheet" href="bootstrap-slider.css">
-		<link rel = "stylesheet" href="bootstrap.min.css">
-		<script type="text/javascript" src="bootstrap-slider.js"></script> -->
 	</head>
 	<div class="header">
             <!--List to organize buttons-->
@@ -51,7 +49,9 @@
 
 		    </div>
 		     <div class="creator-controls">
-		        <button class="btn btn-default" id="create-playlist">create playlist</button>
+		     	<button type="button" class="btn btn-secondary btn-lg" id="create-playlist">Create Playlist</button>
+		    	<button type="button" class="btn btn-secondary btn-lg" id="Start-playlist">Start Playlist</button>
+		   
 		    	<h2>Number of Songs Added by User?</h2>
    
       			<div class="slidecontainer">
@@ -214,14 +214,20 @@
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		avail_dev(access_token, list_devices);
-							}, false);
-							
-							document.getElementById('create-playlist').addEventListener('click',
-							() => {
-								user_id = "123";
-								refreshtoken(refresh_token, (res) => { access_token = res; });
-								create_playlist(access_token, user_id, update_queue_user);									
-							}, false);
+	            }, false);
+	            document.getElementById('create-playlist').addEventListener('click', 
+	          		() => {
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		create_pl(access_token, getCookie('bonfire_user_id'), update_queue_user);
+		          		console.log('playlist id is '+ getCookie('bonfire_playlist_id'));
+	            }, false);
+	            document.getElementById('start-playlist').addEventListener('click', 
+	          		() => {
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		start(access_token, devlist[i].id, res_func);
+	            }, false);
+	            document.getElementById('add-track-btn'.addEventListener('click'))
+	            getCookie('bonfire_playlist_id')
 	        } 
 	      })();
 	    </script>
