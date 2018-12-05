@@ -243,7 +243,7 @@ app.get('/search', (req, res) => {
     const query        = req.query.query; 
     const url          ='https://api.spotify.com/v1/search' +
                         '?q=' + query +
-                        '&type=track&market=US&limit=10&offset=0';
+                        '&type=track&market=US&limit=12&offset=0';
 
     const options = {
         url: url,

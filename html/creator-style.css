@@ -7,28 +7,20 @@
 .header {
 	padding: 1% 2%;
     width: 100%;
-    height: 10vh;
+    height: 7vh;
     position: relative;
     z-index: 1;
 }
-.headerName {
-	/*margin: 0px 5vmin;*/
-   // padding: 0% 0%;
-	font-size: 7vmin;
-    color: black;
-    position: absolute;
-    top: 50%;
-    transform: translate(0,-50%);
-}
+
 .headerButton {
     text-decoration: none;
-    font-size: 2vmin;
-    color: black;
-    padding: 0% 5%;
+    color: white;
+    padding: 0% 3%;
+    font-size: 4vmin;
     /*position: relative;*/
     /*display: inline-block;*/
     /*margin: 0 8vmin 0 0;*/
-    /*float: right;*/
+    float: right;
     height: 100%;
     /*max-width: 10vmin;*/
     text-align: right;
@@ -86,12 +78,15 @@ body{
 	margin: 5% 0;
 	padding: 3%;
 	text-align: center;
-	background-color: #F8CCAF;
+    color: white;
+    font-size: 7vw;
+	/*background-color: #F8CCAF;*/
 }
 
 .creator-controls {
-    background-color: #B6B9EF;
-    margin: 5% 10%;
+    /*background-color: #B6B9EF;*/
+    justify-content: center;
+    margin: 5% 30%;
     padding: 2% 4%;
     width: 45%;
     
@@ -147,11 +142,16 @@ body{
     cursor: pointer;
 }
 
+.active-cyan-4 input[type=text]:focus:not([readonly]) {
+    border: 1px solid #4dd0e1;
+    box-shadow: 0 0 0 1px #4dd0e1;
+}
 .search-results{
-    width:400px;
-    border: 2px solid black;
-    margin:10px;
+    width:300px;
+    /*border: 2px solid black;*/
+    margin:30px;
     float:left;
+    color: white;
 }
 .search-results-image{
     width:250px;
@@ -161,3 +161,4 @@ body{
     border: 2px solid black;
     margin:10px;
 }
+

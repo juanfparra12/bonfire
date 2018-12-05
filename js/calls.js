@@ -71,20 +71,6 @@ const refreshtoken = (refresh_token, res_func) => {
     .done( (data) => { res_func(data.access_token); } );
 }
 
-const avail_dev = (access_token, res_func) => {
-	$.ajax(
-        {
-        	url: '/avail_dev',
-            data: { 
-          		'access_token': access_token
-            },
-            
-  			fail: () => { console.log('fail'); }
-    	}
-  	).done((data) => { res_func(data.devices); });
-
-}
-
 // Creating playlist checks if playlist related to the bonfire already exists.
 // If not, it creates a playlist.
 // If it already exists, it just updates the key if button is pressed
@@ -147,7 +133,6 @@ $.ajax({
 }
 
 
-const refresh_token = getCookie('spotify_ref_token');
 const search = (access_token, query, key, view) =>{
 
     var new_access_token = access_token;
@@ -181,23 +166,21 @@ const search = (access_token, query, key, view) =>{
                         var track_uri = data.tracks.items[i].uri;
                 
                         if(view){  
-                            var results = document.createElement('div');
-                            var para = document.createElement('p');
-                            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-                            para.appendChild(name);
-                            results.appendChild(para);
-                            var uri = document.createTextNode("Track URI: " + track_uri);
-                            para.appendChild(uri);
-                            results.appendChild(para);
-                            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-                            para.appendChild(id);
-                            results.appendChild(para);
-                             var img_url = data.tracks.items[i].album.images[0].url;
-                            var img = document.createElement('img');
-                            img.src = img_url;
-                            img.className = "search-results-image";
-                            results.appendChild(img);
-                            
+                           var results = document.createElement('div');
+                           var img_url = data.tracks.items[i].album.images[0].url;
+                           var img = document.createElement('img');
+                           img.src = img_url;
+                           img.className = "search-results-image";
+                           results.appendChild(img);
+                           var para = document.createElement('p');
+                           var name = document.createTextNode(data.tracks.items[i].name);
+                           para.appendChild(name);
+                           results.appendChild(para);
+                           var para = document.createElement('p');
+                           var artist = document.createTextNode(data.tracks.items[i].artists[0].name);
+                           para.appendChild(artist);
+                           results.appendChild(para);
+
                             results.appendChild(addTrackBtn(new_access_token, track_uri, getCookie('bonfire_playlist_id')));
                             results.className = 'search-results';
                          }
@@ -222,6 +205,7 @@ const search = (access_token, query, key, view) =>{
                        }
                     });
             }
+
         }
     );
 
@@ -251,6 +235,7 @@ const search = (access_token, query, key, view) =>{
     }
 }
 
+
 // Checks if key entered by user is valid 
 const usingPlaylist = (key)=>{
     var url = '/queue' +
@@ -277,3 +262,50 @@ const usingPlaylist = (key)=>{
         fail: () => { console.log('fail'); }
     });
 }
+
+
+const list_devices = (devlist) => {
+    let dev_list   = '<ul style = "list-style-type: none">';
+    const queue_id = getCookie('bonfire_queue_id');
+    if (devlist.length) {
+        for (var i = 0; i < devlist.length; ++i) {
+            var dev = '<li><a href="javascript:select_id(\'' + devlist[i].id +'\',\'' + queue_id + '\', \'' + devlist[i].name + '\');">name: ' + devlist[i].name + '</a></li>';
+            dev_list += dev;
+        }
+    }
+    else {
+        dev_list += '<li>no devices available</li>';
+    }
+
+    dev_list += '</ul>';
+    document.getElementById('device_list').innerHTML = dev_list;
+}
+
+const avail_dev = (access_token, res_func) => {
+	$.ajax(
+        {
+        	url: '/avail_dev',
+            data: { 
+          		'access_token': access_token
+            },
+            
+  			fail: () => { console.log('fail'); }
+    	}
+  	).done((data) => { res_func(data.devices);  });
+}
+
+const select_id = (dev_id, queue_id, dev_name) => {
+    setCookie('bonfire_dev_id', dev_id);
+    setCookie('bonfire_dev_name', dev_name);
+    update_queue_dev_id(dev_id, queue_id);
+    console.log('current device id is: ' + getCookie('bonfire_dev_id'));
+
+    $('#device_list').html('<p>Current device: '+ getCookie('bonfire_dev_name') +'</p>');
+    $('#new-dev').html('select new device');
+    $('#new-dev').on('click', () => { 
+        $('#new-dev').html('refresh devices');
+        setCookie('bonfire_dev_id', "", 1); 
+        avail_dev(getCookie('spotify_acc_token'), list_devices); });
+}
+
+
