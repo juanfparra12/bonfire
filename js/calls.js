@@ -161,6 +161,7 @@ const search = (access_token, query) =>{
             addBtn.appendChild(btnText);
             addBtn.addEventListener("click",
                 ()=>{
+                    console.log(dataURI);
                     console.log(access_token);
                 }, false
             );
