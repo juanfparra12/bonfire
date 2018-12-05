@@ -18,16 +18,16 @@
 	<div class="header">
             <!--List to organize buttons-->
             <!-- <p class="headerName">BONFIRE</p> -->
-            <img id="icon" src="/Images/bonfire-img.png">
+            <img id="icon" src="/images/bonfire-img.png">
             <ul class="headerButtonContainer">
                 <!--Buttons-->
                 <li class="headerButton">
-                	<img id="user-icon" src="/Images/user.png">
+                	<img id="user-icon" src="/images/user.png">
                 	<div id="TEST"></div>
                 </li>
 
                 <li class="headerButton">
-                	<img id="settings-icon" src="/Images/settings.png">
+                	<img id="settings-icon" src="/images/settings.png">
                 	Settings
             	</li>
                 <li class="headerButton">Key: </li>
@@ -37,20 +37,13 @@
 	
 		<div class = "container">
 			 <div id="loggedin">
-        
 		    	<div id="user-profile"></div>
-		        
-		        <div id="oauth"></div>
-
-		        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-		        <h3>available devices</h3>
+	`			<h3>select device for playback</h3>
 		        <div id = "device_list"></div>
-		        <button class="btn btn-default" id="obtain-avail-devices">show available devices</button>
-
 		    </div>
-		     <div class="creator-controls">
+		    <div class="creator-controls">
 		     	<button type="button" class="btn btn-secondary btn-lg" id="create-playlist">Create Playlist</button>
-		    	<button type="button" class="btn btn-secondary btn-lg" id="Start-playlist">Start Playlist</button>
+		    	<button type="button" class="btn btn-secondary btn-lg" id="start-playlist">Start Playlist</button>
 		   
 		    	<h2>Number of Songs Added by User?</h2>
    
@@ -111,31 +104,9 @@
 		        <div class="pull-left">
 		          	<img class="media-object" width="150" src="{{images.0.url}}" />
 		        </div>
-		        <div class="media-body">
-		          	<dl class="dl-horizontal">
-			            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-			            <dt>Id</dt><dd>{{id}}</dd>
-			            <dt>Email</dt><dd>{{email}}</dd>
-			            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-			            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-			            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-			            <dt>Country</dt><dd>{{country}}</dd>
-		          	</dl>
-		        </div>
 	      	</div>
 	    </script>
 	    <!-- END INFO -->
-
-
-	    <!-- DISPLAY TOKEN -->
-	    <script id="oauth-template" type="text/x-handlebars-template">
-		    <h2>oAuth info</h2>
-		    <dl class="dl-horizontal">
-		        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-	        	<dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
-	    	</dl>
-	    </script>
-	    <!-- END TOKEN -->
 
 	    <!-- SLIDER -->
 	    <script>
@@ -163,12 +134,10 @@
 	        var userProfileSource = document.getElementById('user-profile-template').innerHTML, //select the handlebars scripts above, only the html
 	            userProfileTemplate = Handlebars.compile(userProfileSource), //run the scripts above, with the specific values in them
 	            userProfilePlaceholder = document.getElementById('user-profile'); //select the empty space where the html code would eventually go
-	        var oauthSource = document.getElementById('oauth-template').innerHTML, //select the handlebars scripts above, only the html
-	            oauthTemplate = Handlebars.compile(oauthSource), //run the scripts above, with the specific values in them
-	            oauthPlaceholder = document.getElementById('oauth'); //select the empty space where the html code would eventually go
+	        
             var creatorSource = document.getElementById('header-template').innerHTML, //select the handlebars scripts above, only the html
-            creatorTemplate = Handlebars.compile(creatorSource), //run the scripts above, with the specific values in them
-            creatorPlaceholder = document.getElementById('TEST'); //select the empty space where the html code would eventually go
+            	creatorTemplate = Handlebars.compile(creatorSource), //run the scripts above, with the specific values in them
+            	creatorPlaceholder = document.getElementById('TEST'); //select the empty space where the html code would eventually go
 
 	        //Token acquisition
 	        var params = getHashParams(); //get the tokens from the auth.
@@ -181,13 +150,7 @@
 	        } 
 	        else {
 	          	if (access_token) {
-	          		// render Handlebars oauth info
-		            oauthPlaceholder.innerHTML = oauthTemplate({
-		              access_token: access_token,
-		              refresh_token: refresh_token
-		            });
-
-		            get_user(access_token, (res) => { 
+	      			get_user(access_token, (res) => { 
 		            	userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
 		            	creatorPlaceholder.innerHTML     = creatorTemplate(res);
 		            });
@@ -195,8 +158,6 @@
 		            refreshtoken(refresh_token, (res) => { access_token = res; });
 		            get_user(access_token, update_queue_user);
 		            
-
-
 		            $('#loggedin').show();
 	          	} 
 		        else {
@@ -204,21 +165,15 @@
 		            $('#loggedin').hide();
 		        }
 
-		        document.getElementById('obtain-new-token').addEventListener('click', 
-		          	() => { 
-		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		oauthPlaceholder.innerHTML = oauthTemplate({ access_token: access_token, refresh_token: refresh_token });
-		        }, false);
-
-	          	document.getElementById('obtain-avail-devices').addEventListener('click', 
-	          		() => {
+		        setInterval(() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		avail_dev(access_token, list_devices);
-	            }, false);
+	            }, 1000);
+
 	            document.getElementById('create-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-									create_pl(access_token, getCookie('bonfire_user_id'), update_queue_playlist);
+						create_pl(access_token, getCookie('bonfire_user_id'), update_queue_playlist);
 
 	            }, false);
 	            document.getElementById('start-playlist').addEventListener('click', 

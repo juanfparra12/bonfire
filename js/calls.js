@@ -11,7 +11,7 @@
 
 const update_queue_playlist = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
-  console.log(queue_id);
+    console.log(queue_id);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
 	$.ajax({

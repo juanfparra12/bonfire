@@ -46,7 +46,7 @@ const list_devices = (devlist) => {
     const queue_id = getCookie('bonfire_queue_id');
     if (devlist.length) {
         for (var i = 0; i < devlist.length; ++i) {
-            dev_list += '<li><a href = "/select_id?dev_id=' + devlist[i].id +'&queue_id=' + queue_id +'">name: ' + devlist[i].name + ' | ID: ' + devlist[i].id + '</a></li>';
+            dev_list += '<li><a href = "/select_id?dev_id=' + devlist[i].id +'&queue_id=' + queue_id +'">name: ' + devlist[i].name + '</a></li>';
         }
     }
     else {
