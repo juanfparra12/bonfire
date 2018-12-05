@@ -37,6 +37,18 @@ const update_queue_user = (res) => {
     });
 }
 
+const update_queue_dev_id = (dev_id, queue_id) => {
+    const url = '/queue/update/device_id' +
+                '?device_id=' + dev_id + 
+                '&id='        + queue_id;
+
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        success: (response) => { console.log(response); }
+    });
+}
+
 const get_user = (access_token, res_func) => {
 	$.ajax({
         url: 'https://api.spotify.com/v1/me',

@@ -108,23 +108,6 @@ const create_queue = (access_token, refresh_token, res, red_url) => {
     });
 }
 
-const update_queue_dev_id = (dev_id, queue_id) => {
-    const url = '/queue/update/device_id' +
-                '?device_id=' + dev_id + 
-                '&id='        + queue_id;
-
-    const options = {
-        url: url,
-        json: true
-    };
-
-    request.post(options, (error, response, body) => {
-        if (!error && response.statusCode === 200) { 
-            console.log(body);
-        };
-    });
-}
-
 //GET: /login 
 app.get('/login', (req, res) => {
     const state = generateRandomString(16);
@@ -320,16 +303,6 @@ app.put('/start', (req, res) => {
     });  
 });
 
-//GET: '/select' should create a cookie and update the queue with the device id
-app.get('/select_id', (req, res) => {
-    const dev_id   = req.query.dev_id;
-    const queue_id = req.query.queue_id;
-    res.cookie(devIdKey, dev_id, { secure: false });
-    update_queue_dev_id(dev_id, queue_id);
-
-    //TODO: redirect to new main with the cookie now saved.
-    res.redirect('/main.html');
-});
 
 /////////////////////////////////////////////////
 console.log('Listening on 8080');

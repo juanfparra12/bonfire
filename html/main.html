@@ -38,7 +38,7 @@
 		<div class = "container">
 			 <div id="loggedin">
 		    	<div id="user-profile"></div>
-	`			<h3>select device for playback</h3>
+	`			<h3 id = "select-dev-title">select device for playback</h3>
 		        <div id = "device_list"></div>
 		    </div>
 		    <div class="creator-controls">
@@ -166,9 +166,15 @@
 		        }
 
 		        setInterval(() => {
+		        	if (getCookie("bonfire_dev_id") == "") {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
 		          		avail_dev(access_token, list_devices);
-	            }, 1000);
+		          	}
+		          	else {
+		          		clearInterval(this);
+		          		document.getElementById('device_list').innerHTML = '<p>Current device: </p>' ;
+		          	}
+	            }, 200);
 
 	            document.getElementById('create-playlist').addEventListener('click', 
 	          		() => {

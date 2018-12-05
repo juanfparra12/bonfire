@@ -46,7 +46,7 @@ const list_devices = (devlist) => {
     const queue_id = getCookie('bonfire_queue_id');
     if (devlist.length) {
         for (var i = 0; i < devlist.length; ++i) {
-            dev_list += '<li><a href = "/select_id?dev_id=' + devlist[i].id +'&queue_id=' + queue_id +'">name: ' + devlist[i].name + '</a></li>';
+            dev_list += '<li><a id= "' + devlist[i].id +'" class="dev_link" style="" href = "#">name: ' + devlist[i].name + '</a></li>';
         }
     }
     else {
@@ -54,7 +54,24 @@ const list_devices = (devlist) => {
     }
 
     dev_list += '</ul>';
-        document.getElementById('device_list').innerHTML = dev_list;    
+        document.getElementById('device_list').innerHTML = dev_list;   
+
+    const anchors = document.getElementsByClassName("dev_link");
+    for (var i = 0; i < anchors.length; i++) {
+        anchors[i].addEventListener("click", 
+            (event) => {
+                event.preventDefault();
+                const dev_id = this.id;
+                select_id(dev_id, queue_id);
+            }, 
+            false);
+    } 
+}
+
+const select_id = (dev_id, queue_id) => {
+    setCookie('bonfire_dev_id', dev_id);
+    update_queue_dev_id(dev_id, queue_id);
+    console.log('current device id is: ' + getCookie('bonfire_dev_id'));
 }
 
 
