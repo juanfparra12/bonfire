@@ -19,35 +19,43 @@ var data;
 exports.create = function(req, res){
     var accessToken = req.query.access_token;
     var refreshToken = req.query.refresh_token;
-
+    var queueId = bnfr.generateRandomString(6);
     var queueJson = {
         "accessToken" : accessToken,
-        "refreshToken" : refreshToken 
+        "refreshToken" : refreshToken,
+        "queueId" : queueId
     };
 
     var query = Queue.where({refreshToken:refreshToken});
     
     // Queries to find if user already has an existing queue
-    query.find(function(err,queue){
+    query.findOne(function(err,queue){
         if(err){
             console.log(err);
             res.send(err);
         }else{
             // If queue is NULL, then create the new playlist 
-            if(queue == ""){
+            if(queue == null){
                 var queue = new Queue(queueJson);
                 queue.save(function(err){
                     if(err){
                         console.log(err);
                         res.status(400).send(err);
                     }else{
+                        console.log("New playlist created");
                         res.status(200).json(queue);
                     }
                 });
             
             }// If queue exists, then new queue is not created
             else{
-                res.send("Account already has a playlist");
+                if(err){
+                    console.log(err)
+                    res.status(400).send(err);
+                }else{
+                    console.log("Already existing playlist")
+                    res.status(200).json(queue);
+                }
             }
         }
     });
@@ -56,10 +64,10 @@ exports.create = function(req, res){
 
 // PUT: Update Queue with CreatorID
 exports.updateCreator = (req,res) => {
-    var _id = req.query.id;
+    var queueId = req.query.id;
     var creatorName = req.query.creator;
 
-    Queue.findOneAndUpdate({_id:_id}, {$set:{creator: creatorName}}, {new:true}, (error,doc)=>{
+    Queue.findOneAndUpdate({queueId : queueId}, {$set:{creator: creatorName}}, {new:true}, (error,doc)=>{
         if(error){
             console.log(error);
             res.send(error);
@@ -71,10 +79,10 @@ exports.updateCreator = (req,res) => {
 
 // PUT: Update Queue with Playlist ID
 exports.updatePlaylistId = (req,res) => {
-    var _id = req.query.id;
+    var queueId = req.query.id;
     var playlist_id = req.query.playlist_id;
 
-    Queue.findOneAndUpdate({_id:_id}, {$set:{playlistId : playlist_id}}, {new:true}, (error,doc)=>{
+    Queue.findOneAndUpdate({queueId:queueId}, {$set:{playlistId : playlist_id}}, {new:true}, (error,doc)=>{
         if(error){
             console.log(error);
             res.send(error);
@@ -86,10 +94,10 @@ exports.updatePlaylistId = (req,res) => {
 
 // PUT: Update Queue with Playlist URI
 exports.updatePlaylistURI = (req,res) => {
-    var _id = req.query.id;
+    var queueId = req.query.id;
     var playlist_uri = req.query.playlist_uri;
 
-    Queue.findOneAndUpdate({_id:_id}, {$set:{playlistURI : playlist_uri}}, {new:true}, (error,doc)=>{
+    Queue.findOneAndUpdate({queueId:queueId}, {$set:{playlistURI : playlist_uri}}, {new:true}, (error,doc)=>{
         if(error){
             console.log(error);
             res.send(error);
@@ -101,10 +109,10 @@ exports.updatePlaylistURI = (req,res) => {
 
 // PUT: Update Queue with Device ID
 exports.updateDeviceId = (req,res) => {
-    var _id = req.query.id;
+    var queueId = req.query.id;
     var device_id = req.query.device_id;
         
-    Queue.findOneAndUpdate({_id:_id}, {$set:{deviceId : device_id}}, {new:true}, (error,doc)=>{
+    Queue.findOneAndUpdate({queueId:queueId}, {$set:{deviceId : device_id}}, {new:true}, (error,doc)=>{
         if(error){
             console.log(error);
             res.send(error);
@@ -114,14 +122,30 @@ exports.updateDeviceId = (req,res) => {
     });
 }
 
-// exports.getQueueId = function(req, res){
-    
-// }
+// PUT: Update Queue ID
+exports.updateQueueId = (req, res) => {
+    // var queueId = req.query.id;
+    var refreshToken = req.query.refreshToken;
+    var newQueueId = bnfr.generateRandomString(6);
+
+    // // Check if given refresh token already has queueId
+    // Queue.findOne({refreshToken:refreshToken}, (err, queue)=>{
+
+    // });
+    Queue.findOneAndUpdate({refreshToken:refreshToken}, {$set:{queueId : newQueueId}}, {new:true}, (error,doc)=>{
+        if(error){
+            console.log(error);
+            res.send(error);
+        }else{
+            res.status(200).send(doc);
+        }
+    });
+}
 
 //GET: Searches Queue by _id
 exports.get = function(req, res){
-    var id = req.query.id;
-    var query = Queue.where({_id:id});
+    var queueId = req.query.id;
+    var query = Queue.where({queueId:queueId});
     query.find(function(err, queue){
         if(err){
             console.log(err);
@@ -134,8 +158,8 @@ exports.get = function(req, res){
 
 //DELETE: Delete Queue
 exports.delete = function(req, res){
-    var id = req.query.id;
-    var query = Queue.where({_id:id});
+    var queueId = req.query.id;
+    var query = Queue.where({queueId:queueId});
     query.findOneAndRemove(function(err, queue){
         if(err){
             console.log(err);
@@ -152,7 +176,7 @@ exports.delete = function(req, res){
 // Update queue with songs
 // Requires CreatorID, songId, songName, and addedBy name
 exports.addSong = function(req, res){
-    var id = req.query.id;
+    var queueId = req.query.id;
     var songId = req.query.songId;
     var songName = req.query.songName;
     var addedBy = req.query.addedBy;
@@ -166,7 +190,7 @@ exports.addSong = function(req, res){
     );
     console.log(song);
     // // Check if player already has a playlist
-    Queue.findOne({_id:id}, (err, queue) => {
+    Queue.findOne({queueId:queueId}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
@@ -176,7 +200,7 @@ exports.addSong = function(req, res){
                 var data = queue.songs;
                 data.push(song);
                 // res.send(data);
-                Queue.findOneAndUpdate({_id:id}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                Queue.findOneAndUpdate({queueId:queueId}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
                     if(err){
                         console.log(err);
                         res.send(err);
@@ -193,10 +217,10 @@ exports.addSong = function(req, res){
 
 // GET: Obtains next song information
 exports.playNextSong = (req, res)=>{
-    var id = req.query.id;
+    var queueId = req.query.id;
 
     // // Check if player already has a playlist
-    Queue.findOne({_id:id}, (err, queue) => {
+    Queue.findOne({queueId:queueId}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
@@ -207,7 +231,7 @@ exports.playNextSong = (req, res)=>{
                 var song = data[0];                
                 data.shift();
 
-                Queue.findOneAndUpdate({_id:id}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
+                Queue.findOneAndUpdate({queueId:queueId}, {$set:{songs:data}}, {new:true}, (error,doc)=>{
                     if(err){
                         console.log(err);
                         res.send(err);
@@ -224,10 +248,10 @@ exports.playNextSong = (req, res)=>{
 
 // DELETE: Obtains next song information
 exports.deleteSong = (req, res)=>{
-    var id = req.query.id;
+    var queueId = req.query.id;
 
     // // Check if player already has a playlist
-    Queue.findOne({_id:id}, (err, queue) => {
+    Queue.findOne({queueId:queueId}, (err, queue) => {
         if(err){
             console.log(err);
             res.status(400).send(err);
