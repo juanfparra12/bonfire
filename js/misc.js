@@ -9,6 +9,7 @@
  * UF Web Apps - Fall 2018
  */ 
 
+
 const getHashParams = () => {
 	var hashParams = {};
 	var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -21,7 +22,7 @@ const getHashParams = () => {
 	return hashParams;
 }
 
-const setCookie = function(cname, cvalue, exdays) {
+const setCookie = (cname, cvalue, exdays) => {
     const date = new Date(); //Create an date object
     date.setTime(date.getTime() + (exdays*1000*60*60*24));
     const expires = "expires=" + date.toGMTString();
@@ -40,40 +41,6 @@ const getCookie = (cname) => {
      
     return "";
 }
-
-const list_devices = (devlist) => {
-    let dev_list = '<ul style = "list-style-type: none">';
-    const queue_id = getCookie('bonfire_queue_id');
-    if (devlist.length) {
-        for (var i = 0; i < devlist.length; ++i) {
-            dev_list += '<li><a id= "' + devlist[i].id +'" class="dev_link" style="" href = "#">name: ' + devlist[i].name + '</a></li>';
-        }
-    }
-    else {
-        dev_list += '<li>no devices available</li>';
-    }
-
-    dev_list += '</ul>';
-        document.getElementById('device_list').innerHTML = dev_list;   
-
-    const anchors = document.getElementsByClassName("dev_link");
-    for (var i = 0; i < anchors.length; i++) {
-        anchors[i].addEventListener("click", 
-            (event) => {
-                event.preventDefault();
-                const dev_id = this.id;
-                select_id(dev_id, queue_id);
-            }, 
-            false);
-    } 
-}
-
-const select_id = (dev_id, queue_id) => {
-    setCookie('bonfire_dev_id', dev_id);
-    update_queue_dev_id(dev_id, queue_id);
-    console.log('current device id is: ' + getCookie('bonfire_dev_id'));
-}
-
 
 
 

@@ -70,20 +70,6 @@ const refreshtoken = (refresh_token, res_func) => {
     .done( (data) => { res_func(data.access_token); } );
 }
 
-const avail_dev = (access_token, res_func) => {
-	$.ajax(
-        {
-        	url: '/avail_dev',
-            data: { 
-          		'access_token': access_token
-            },
-            
-  			fail: () => { console.log('fail'); }
-    	}
-  	).done((data) => { res_func(data.devices); });
-
-}
-
 const create_pl = (access_token, user_id, res_func) =>{
 $.ajax({
    url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
@@ -129,9 +115,11 @@ $.ajax({
 
 var view = true;
 var viewSwitch = document.getElementById('switch-view');
+/*
 viewSwitch.addEventListener("click", function(){
     view = !view;
-});
+});*/
+
 const refresh_token = getCookie('spotify_ref_token');
 const search = (access_token, query) =>{
     var url = '/search' +
@@ -224,5 +212,50 @@ const search = (access_token, query) =>{
             );
         return addBtn;
     }
+}
+
+
+const list_devices = (devlist) => {
+    let dev_list   = '<ul style = "list-style-type: none">';
+    const queue_id = getCookie('bonfire_queue_id');
+    if (devlist.length) {
+        for (var i = 0; i < devlist.length; ++i) {
+            var dev = '<li><a href="javascript:select_id(\'' + devlist[i].id +'\',\'' + queue_id + '\', \'' + devlist[i].name + '\');">name: ' + devlist[i].name + '</a></li>';
+            dev_list += dev;
+        }
+    }
+    else {
+        dev_list += '<li>no devices available</li>';
+    }
+
+    dev_list += '</ul>';
+    document.getElementById('device_list').innerHTML = dev_list;
+}
+
+const avail_dev = (access_token, res_func) => {
+	$.ajax(
+        {
+        	url: '/avail_dev',
+            data: { 
+          		'access_token': access_token
+            },
+            
+  			fail: () => { console.log('fail'); }
+    	}
+  	).done((data) => { res_func(data.devices);  });
+}
+
+const select_id = (dev_id, queue_id, dev_name) => {
+    setCookie('bonfire_dev_id', dev_id);
+    setCookie('bonfire_dev_name', dev_name);
+    update_queue_dev_id(dev_id, queue_id);
+    console.log('current device id is: ' + getCookie('bonfire_dev_id'));
+
+    $('#device_list').html('<p>Current device: '+ getCookie('bonfire_dev_name') +'</p>');
+    $('#new-dev').html('select new device');
+    $('#new-dev').on('click', () => { 
+        $('#new-dev').html('refresh devices');
+        setCookie('bonfire_dev_id', "", 1); 
+        avail_dev(getCookie('spotify_acc_token'), list_devices); });
 }
 
