@@ -18,9 +18,7 @@
 	<div class="header">
             <!--List to organize buttons-->
             <!-- <p class="headerName">BONFIRE</p> -->
-            <a href = "index.html">
-            	<img id="icon" src="/Images/bonfire-img.png" >
-            </a>
+            <img id="icon" src="/Images/bonfire-img.png">
             <ul class="headerButtonContainer">
                 <!--Buttons-->
                 <li class="headerButton">
@@ -32,6 +30,7 @@
                 	<img id="settings-icon" src="/Images/settings.png">
                 	Settings
             	</li>
+                <li class="headerButton">Key: </li>
             </ul>
     </div>
 	<body>
@@ -42,26 +41,59 @@
 		    	<div id="user-profile"></div>
 		        
 		        <div id="oauth"></div>
-		    </div>
-		    <div class="light-bonfire-login">
-		    	<form id = "login-key-form" action="">
-  					<br>
-  					<input type="text" id="key" value=""placeholder="Enter Key ID" >
-  					<br>
-  					<input type="submit" id="submit-button" value="Submit">
-				</form>		    	
+
+		        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+		        <h3>available devices</h3>
+		        <div id = "device_list"></div>
+		        <button class="btn btn-default" id="obtain-avail-devices">show available devices</button>
+
 		    </div>
 		     <div class="creator-controls">
-		    	<form id = "search-form" action="/search">
-  					<input type="text" id="query" value="" placeholder="Add to Queue">
-  					<br>
-  					<input id = "search-btn" type="submit" value="Search">
-  					<input type="submit" id="add-track-queue" value="Add to Queue">
+		     	<button type="button" class="btn btn-secondary btn-lg" id="create-playlist">Create Playlist</button>
+		    	<button type="button" class="btn btn-secondary btn-lg" id="start-playlist">Start Playlist</button>
+		    	<button type="button" class="btn btn-secondary btn-lg" id="add-track-btn">Add track</button>
+		   
+		    	<h2>Number of Songs Added by User?</h2>
+   
+      			<div class="slidecontainer">
+				  <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
+				  <p>Value: <span id="demo"></span></p>
+				</div>
+
+		    	<h2>Users Can Skip Songs?</h2>
+		    	<form action="">
+		    		<form>
+					    <label class="radio">
+					      <input type="radio" name="skip-song" checked>Yes
+					    </label>
+					    <label class="radio">
+					      <input type="radio" name="skip-song">No
+					    </label>
+					  </form>
 				</form>
-				<button id="switch-view">Switch View</button>
-			</div>
-			<div id ='search-results-container'>
-				<div class='search-results'></div>
+
+		    	<h2>Users Can Delete Songs?</h2>
+		    	<form action="">
+		    		<form>
+					    <label class="radio">
+					      <input type="radio" name="delete-song" checked>Yes
+					    </label>
+					    <label class="radio">
+					      <input type="radio" name="delete-song">No
+					    </label>
+					  </form>
+				</form>
+		    	<h2>Users Can Shuffle Songs?</h2>
+		    	<form action="">
+		    		<form>
+					    <label class="radio">
+					      <input type="radio" name="shuffle-song" checked>Yes
+					    </label>
+					    <label class="radio">
+					      <input type="radio" name="shuffle-song">No
+					    </label>
+					  </form>
+				</form>
 			</div>
 
 		</div>
@@ -69,13 +101,13 @@
 
 		 <!-- HEADER INFO -->
 	    <script id="header-template" type="text/x-handlebars-template">
-		    <li class="headerButton">{{display_name}}</li>
+		    {{display_name}}
 		</script>
 		<!-- END HEADER INFO -->
 
 		<!-- USER INFO HANDLEBAR TEMPLATE -->
 		<script id="user-profile-template" type="text/x-handlebars-template">
-		    <h1>{{display_name}}'s Playlist</h1>
+		    <h1>Logged in as {{display_name}}</h1>
 		    <div class="media">
 		        <div class="pull-left">
 		          	<img class="media-object" width="150" src="{{images.0.url}}" />
@@ -106,7 +138,17 @@
 	    </script>
 	    <!-- END TOKEN -->
 
-	   
+	    <!-- SLIDER -->
+	    <script>
+			var slider = document.getElementById("myRange");
+			var output = document.getElementById("demo");
+			output.innerHTML = slider.value;
+
+			slider.oninput = function() {
+			  output.innerHTML = this.value;
+			}
+		</script>
+		<!-- END SLIDER -->
 
 
 	    <!--for the handlebars script templates-->
@@ -143,46 +185,54 @@
 	          		// render Handlebars oauth info
 		            oauthPlaceholder.innerHTML = oauthTemplate({
 		              access_token: access_token,
-		              refresh_token: refresh_token,
-		              query: query
+		              refresh_token: refresh_token
 		            });
-					
-		            get_user(access_token, (res) => { userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
-		            	creatorPlaceholder.innerHTML = creatorTemplate(res);
-		            })
+
+		            get_user(access_token, (res) => { 
+		            	userProfilePlaceholder.innerHTML = userProfileTemplate(res); 
+		            	creatorPlaceholder.innerHTML     = creatorTemplate(res);
+		            });
+
+		            refreshtoken(refresh_token, (res) => { access_token = res; });
+		            get_user(access_token, update_queue_user);
+		            
+
+
 		            $('#loggedin').show();
 	          	} 
 		        else {
 		          	console.log('Failed to login');
 		            $('#loggedin').hide();
 		        }
-				console.log(access_token);
-		        // document.getElementById('obtain-new-token').addEventListener('click', 
-		        //   	() => { 
-		        //   		refreshtoken(refresh_token, (res) => { access_token = res; });
-		        //   		oauthPlaceholder.innerHTML = oauthTemplate({ access_token: access_token, refresh_token: refresh_token });
-		        // }, false);
 
-	          	// document.getElementById('obtain-avail-devices').addEventListener('click', 
-	          	// 	() => {
-		        //   		
-		        //   		avail_dev(access_token, list_devices);
-	            // }, false);
+		        document.getElementById('obtain-new-token').addEventListener('click', 
+		          	() => { 
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		oauthPlaceholder.innerHTML = oauthTemplate({ access_token: access_token, refresh_token: refresh_token });
+		        }, false);
 
-	            document.getElementById('search-btn').addEventListener('click',
+	          	document.getElementById('obtain-avail-devices').addEventListener('click', 
+	          		() => {
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		avail_dev(access_token, list_devices);
+	            }, false);
+	            document.getElementById('create-playlist').addEventListener('click', 
+	          		() => {
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		create_pl(access_token, getCookie('bonfire_user_id'), update_queue_playlist);
+	            }, false);
+	            document.getElementById('start-playlist').addEventListener('click', 
+	          		() => {
+		          		refreshtoken(refresh_token, (res) => { access_token = res; });
+		          		start(access_token, devlist[i].id, res_func);
+	            }, false);
+	            document.getElementById('add-track-btn').addEventListener('click',
 	            	()=>{
-						refreshtoken(refresh_token, (res) => { access_token = res; });
-						var query = document.getElementById('query').value;
-	            		search(access_token, query);
-	            	}, false);
-	            document.getElementById('add-track-queue').addEventListener('click',
-	            	()=>{
-	            		refreshtoken(refresh_token, (res) => { access_token = res; });
-	            		add_track(access_token, track_uri, res_func);
-	            	}, false);
+	            		refreshtoken(refresh_token, (res) => {access_token = res;});
+	            		add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
+	            	},false);
 	        } 
-	      })()	;
+	      })();
 	    </script>
-
 	</body>
 </html>

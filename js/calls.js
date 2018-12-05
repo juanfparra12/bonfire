@@ -12,18 +12,22 @@
 const update_queue_playlist = (res) => {
 	const queue_id = getCookie('bonfire_queue_id');
   console.log(queue_id);
+  console.log('ID PLAYLIST 1 ' + res.id);
+  console.log('the uri of pl is: ' + res.uri);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
+  setCookie('bonfire_playlist_id', res.id, 1);
+  setCookie('bonfire_playlist_uri', res.uri, 1);
+  console.log('ID PLAYLIST 2: ' + getCookie('bonfire_playlist_id'));
+
 	$.ajax({
         url: url_id,
-        method: 'PUT',
-        success: (response) => { setCookie('bonfire_playlist_id', res.id, 1); console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
+        success: (response) => { setCookie('bonfire_playlist_id', res.id, 1); console.log('ID PLAYLIST 2: ' + getCookie('bonfire_playlist_id')); }
     });
 
     $.ajax({
         url: url_uri,
-        method: 'PUT',
-        success: (response) => { setCookie('bonfire_playlist_uri', res.uri, 1); console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
+        success: (response) => { setCookie('bonfire_playlist_uri', res.uri, 1); console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri')); }
     });
 }
 
@@ -74,7 +78,7 @@ const avail_dev = (access_token, res_func) => {
 
 const create_pl = (access_token, user_id, res_func) =>{
 $.ajax({
-   url: '/create_pl?access_token=' + access_token+'&user_id='+user_id,
+   url: '/create_pl?access_token=' + access_token + '&user_id='+user_id,
    method: 'POST',
    data: {
      'access_token': access_token,
@@ -83,10 +87,11 @@ $.ajax({
    success: (response) => {res_func(response);},
  });
 }
-
+ // stringToQuery(track_uri, true)
 const add_track = (access_token, track_uri, playlist_id, res_func) =>{
+//console.log('DEBUG: ' + res.id);
 $.ajax({
-   url: '/add_track',
+   url: '/add_track?access_token=' + access_token + '&track_uri=' +'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78' + '&playlist_id=' + getCookie('bonfire_playlist_id'),
    method: 'POST',
    data: {
      'access_token': access_token,
@@ -108,106 +113,6 @@ $.ajax({
    },
    success: (response) => { console.log(response); }
  });
-
-var view = true;
-var viewSwitch = document.getElementById('switch-view');
-viewSwitch.addEventListener("click", function(){
-    view = !view;
-});
-const refresh_token = getCookie('spotify_ref_token');
-const search = (access_token, query) =>{
-    var url = '/search' +
-    '?access_token=' + access_token + 
-    '&query=' + stringToQuery(query);
-    console.log(url);
-   $.ajax(
-    {
-      type: "GET",
-      url: '/search',
-        data:{
-          'access_token': access_token,
-          'query': query
-        },
-        fail: () => { console.log('fail'); }
-    }
-  ).done((data) => { 
-      var resultsContainer = document.getElementById('search-results-container');
-      removeChildNodes(resultsContainer);
-      
-      for(var i = 0; i < data.tracks.items.length; i++){
-        if(view){  
-            console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var dataURI = data.tracks.items[i].uri;
-            var results = document.createElement('div');
-            var para = document.createElement('p');
-            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-            para.appendChild(name);
-            results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + data.tracks.items[i].uri);
-            para.appendChild(uri);
-            results.appendChild(para);
-            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-            para.appendChild(id);
-            results.appendChild(para);
-
-            var img_url = data.tracks.items[i].album.images[0].url;
-            var img = document.createElement('img');
-            img.src = img_url;
-            img.className = "search-results-image";
-            results.appendChild(img);
-
-            var addBtn = document.createElement('button');
-            var btnText = document.createTextNode("Add Track");
-            addBtn.appendChild(btnText);
-            addBtn.addEventListener("click",
-                ()=>{
-                    refreshtoken(refresh_token, (res) => { access_token = res; });
-                    console.log(access_token    );
-                }, false
-            );
-            results.appendChild(addBtn);
-            results.className = 'search-results';
-
-        }
-        else{
-            console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var dataURI = data.tracks.items[i].uri;
-            var results = document.createElement('div');
-            var para = document.createElement('p');
-            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-            para.appendChild(name);
-            results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + data.tracks.items[i].uri);
-            para.appendChild(uri);
-            results.appendChild(para);
-            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-            para.appendChild(id);
-            results.appendChild(para);
-
-
-            var addBtn = document.createElement('button');
-            var btnText = document.createTextNode("Add Track");
-            addBtn.appendChild(btnText);
-            addBtn.addEventListener("click",
-                ()=>{
-                    refreshtoken(refresh_token, (res) => { access_token = res; });
-                    console.log(access_token    );
-                }, false
-            );
-            results.appendChild(addBtn);
-            results.className = 'search-results-list';
-    
-        }
-        resultsContainer.appendChild(results);
-
-      }
-    });
-
-    var removeChildNodes = function(parentDiv){
-		while (parentDiv.hasChildNodes()) {
-			parentDiv.removeChild(parentDiv.firstChild);
-		}
-    };
 }
 
 
