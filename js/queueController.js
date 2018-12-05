@@ -146,7 +146,7 @@ exports.updateQueueId = (req, res) => {
 exports.get = function(req, res){
     var queueId = req.query.id;
     var query = Queue.where({queueId:queueId});
-    query.find(function(err, queue){
+    query.findOne(function(err, queue){
         if(err){
             console.log(err);
             res.status(400).send(err);

@@ -44,7 +44,7 @@ const generateRandomString = (length) => {
 exports.generateRandomString = generateRandomString;
 //Create server
 const app = express();
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
 
 
 

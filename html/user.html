@@ -86,16 +86,19 @@
 		        <div id="oauth" style="display: none;"></div>
 		    </div>
 		    <div class="light-bonfire-login">
-		    	<form id = "login-key-form" action="">
+				<h1>Current Playlist:</h1>
+				<h3 id="current-creator-name"></h3>
+				<h4 id="current-key"></h4>
+		    	<form id = "login-key-form" onsubmit="return false;">
   					<br>
   					<input type="text" id="key" value=""placeholder="Enter Key ID" >
   					<br>
-  					<input type="submit" id="submit-button" value="Submit">
+  					<input type="submit" id="key-submit-button" value="Submit">
 				</form>		    	
 		    </div>
+
 		    <div class="creator-controls">
-		    	<form id = "search-form" action="/search">
-  					<!-- <input type="text" id="query" value="" placeholder="Add to Queue"> -->
+		    	<form id = "search-form" onsubmit="return false;">
   					<div class="active-cyan-4 mb-4">
   						<input class="form-control" type="text" id="query" value ="" placeholder="Search songs..." aria-label="Search">
 					</div>
@@ -200,21 +203,48 @@
 		            $('#loggedin').hide();
 		        }
 
-		       
+			   
+				var view = true;
+				var viewSwitch = document.getElementById('switch-view');
+				var resultsContainer = document.getElementById('search-results-container');
+
+				// Switches between list and tile view
+				viewSwitch.addEventListener("click", function(){
+					view = !view;
+					var key = $('#current-key').text();
+					if(key != ""){
+							refreshtoken(refresh_token, (res) => { access_token = res; });
+							var query = document.getElementById('query').value;
+							search(access_token, query, key, view);
+						}else{
+							alert("Please enter a key");
+					}
+				});
+
 	            document.getElementById('search-btn').addEventListener('click',
 	            	()=>{
-	            		refreshtoken(refresh_token, (res) => { access_token = res; });
-						var query = document.getElementById('query').value;
-	            		search(access_token, query);
-	            		console.log('DEBUG');
+						var key = $('#current-key').text();
+						if(key != ""){
+							refreshtoken(refresh_token, (res) => { access_token = res; });
+							var query = document.getElementById('query').value;
+							search(access_token, query, key, view);
+						}else{
+							alert("Please enter a key");
+						}
+
 	            	}, false);
-	            document.getElementById('add-track-btn').addEventListener('click',
-	            	()=>{
-	            		refreshtoken(refresh_token, (res) => {access_token = res;});
-	            		add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
-	            	},false);
+	            // document.getElementById('add-track-btn').addEventListener('click',
+	            	// ()=>{
+	            		// refreshtoken(refresh_token, (res) => {access_token = res;});
+	            		// add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
+					// },false);
+				document.getElementById('key-submit-button').addEventListener('click',
+					()=>{
+						var key = document.getElementById('key').value;
+						usingPlaylist(key);
+					},false);
 	        }  
-	      })();
+		  })();
 	    </script>
 
 	</body>
