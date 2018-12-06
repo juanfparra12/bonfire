@@ -1,7 +1,13 @@
 <!-- <h1>Home</h1> -->
 
-<span ng-show="currentUser" style="color: white">
+<script src="../../js/misc.js" type="text/javascript"></script>
+<span id="currentUser" ng-show="currentUser" style="color: white">
   
 Welcome {{currentUser.username}}
 
 </span>
+
+<script>
+    var scope = angular.element(document.getElementById('currentUser')).scope();
+ 
+</script>

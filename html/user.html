@@ -77,14 +77,37 @@
               </span>
         </nav>
 	<body> -->
-	
+<!-- 
+
+	<div class="scrollbar square scrollbar-lady-lips thin">
+  <div class="force-overflow"></div>
+</div>
+
+ -->
+
 		<div class = "container">
 			 <div id="loggedin">
-        
 		    	<!-- <div id="user-profile"></div> -->
-		        
 		        <div id="oauth" style="display: none;"></div>
-		    </div>
+			</div>
+			<div id="queue-container" class="scrollbar scrollbar-primary">
+				<div id="queue-display" >
+					<table class="table table-hover">
+							<thead>
+							  <tr>
+								<th scope="col">#</th>
+								<th scope="col">Song</th>
+								<th scope="col">Artist</th>
+								<th scope="col">Added By</th>
+							  </tr>
+							</thead>
+							<tbody id=queue-body>
+							</tbody>
+						  </table>
+				</div>
+			</div>
+				
+			</div>
 		    <div class="light-bonfire-login">
 				<h1>Current Playlist:</h1>
 				<h3 id="current-creator-name"></h3>
@@ -103,9 +126,9 @@
   						<input class="form-control" type="text" id="query" value ="" placeholder="Search songs..." aria-label="Search" style="width: 400px">
 					</div>
 
-					<div class="btn-group inline pull-left" id="search-and-switch" data-toggle="buttons-checkbox"> 
-						<button type="button" class="btn btn-primary" id="search-btn" style="margin-right: 10px" >Search</button>
-						<button type="button" class="btn btn-primary" id="switch-view">Switch</button>
+					<div class="btn-group inline pull-left" data-toggle="buttons-checkbox"> 
+						<input type="button" class="btn btn-primary" id="search-btn" style="margin-right: 10px" value="Search"></input>
+						<input type="button" class="btn btn-primary" id="switch-view" value="Switch"></input>
 					</div>
 				</form>
 			</div>

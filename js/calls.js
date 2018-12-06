@@ -156,7 +156,7 @@ const search = (access_token, query, key, view) =>{
                             'query': query
                         },
                         fail: () => { console.log('fail'); },
-                        success:()=>{console.log("new access", new_access_token);}
+                        success:(res)=>{console.log(res);}
                     }).done((data) => { 
                       var resultsContainer = document.getElementById('search-results-container');
                       removeChildNodes(resultsContainer);
@@ -164,7 +164,7 @@ const search = (access_token, query, key, view) =>{
                       for(var i = 0; i < data.tracks.items.length; i++){
                         console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
                         var track_uri = data.tracks.items[i].uri;
-                
+                        var song_id = data.tracks.items[i].id;
                         if(view){  
                            var results = document.createElement('div');
                            var img_url = data.tracks.items[i].album.images[0].url;
@@ -181,30 +181,21 @@ const search = (access_token, query, key, view) =>{
                            para.appendChild(artist);
                            results.appendChild(para);
 
-                            results.appendChild(addTrackBtn(new_access_token, track_uri, getCookie('bonfire_playlist_id')));
+                            results.appendChild(addTrackBtn(new_access_token, track_uri, song_id, data.tracks.items[i].artists[0].name, data.tracks.items[i].name, getCookie('bonfire_playlist_id')));
                             results.className = 'search-results';
                          }
                         else{
                             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
                             var results = document.createElement('div');
                             var para = document.createElement('p');
-                            // var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-                            // para.appendChild(name);
-                            // results.appendChild(para);
-                            // var uri = document.createTextNode("Track URI: " + track_uri);
-                            // para.appendChild(uri);
-                            // results.appendChild(para);
-                            // var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-                            // para.appendChild(id);
-                            // results.appendChild(para);
-                            var name = document.createTextNode(data.tracks.items[i].name);
+                          var name = document.createTextNode(data.tracks.items[i].name);
                            para.appendChild(name);
                            results.appendChild(para);
                            var para = document.createElement('p');
                            var artist = document.createTextNode(data.tracks.items[i].artists[0].name);
                            para.appendChild(artist);
                            results.appendChild(para);
-                            results.appendChild(addTrackBtn(new_access_token, track_uri, getCookie('bonfire_playlist_id')));
+                            results.appendChild(addTrackBtn(new_access_token, track_uri, song_id, data.tracks.items[i].artists[0].name, data.tracks.items[i].name, getCookie('bonfire_playlist_id')));
                             results.className = 'search-results-list';
                     
                         }
@@ -216,15 +207,9 @@ const search = (access_token, query, key, view) =>{
         }
     );
 
-    // Recursively removes child nodes in the html
-     var removeChildNodes = function(parentDiv){
-		while (parentDiv.hasChildNodes()) {
-			parentDiv.removeChild(parentDiv.firstChild);
-		}
-    };
 
     // Add track button functionality for each search result
-    var addTrackBtn = function(access_token, track_uri, playlist_id){
+    var addTrackBtn = function(access_token, track_uri, song_id, artist_name, song_name, playlist_id){
         // $("#playlist-creator-name")
         var addBtn = document.createElement('button');
         var btnText = document.createTextNode("Add Track");
@@ -233,14 +218,109 @@ const search = (access_token, query, key, view) =>{
             addBtn.addEventListener("click",
                 ()=>{
                     alert("Track has been added");
-                    console.log("TRACK_ACCESS", access_token);
+                    //key, songId, songName, addedBy
+                    
+                    console.log(artist_name);
+                    addSongToQueue(key, song_id, artist_name, song_name, "Anonymous", track_uri);
                     add_track(access_token, track_uri, playlist_id);
                 }, false
             );
         addBtn.className = "btn btn-secondary btn-sm";
         return addBtn;
     }
+
+  
 }
+
+    // Recursively removes child nodes in the html
+    var removeChildNodes = function(parentDiv){
+		while (parentDiv.hasChildNodes()) {
+			parentDiv.removeChild(parentDiv.firstChild);
+		}
+    };
+
+    const updateQueueDisplay = (key)=>{
+        var body = document.getElementById("queue-body");
+        removeChildNodes(body);
+        var url = '/queue' +
+        '?id=' + key;
+        
+        $.ajax(
+            {
+              type: "GET",
+              url: url,
+                data:{
+                },
+                success: (response) =>{
+                    if(response == null){
+                    }
+                    else{
+                    }
+                },
+                fail: () => { console.log('fail');},
+                success: (response) =>{
+                    for(var i = 0; i < response.songs.length; i++){
+                        var tr = document.createElement('tr');
+                        var th = document.createElement('th');
+                        var songName = response.songs[i].name;
+                        var artistName = response.songs[i].artistName;
+                        var addedBy = response.songs[i].addedBy;
+                        var para = document.createTextNode(""+(parseInt(i)+1));
+                        th.appendChild(para);
+                        th.setAttribute("scope", "row");
+                        tr.appendChild(th);
+                        var td = document.createElement('td');
+                        para = document.createTextNode(songName);
+                        td.appendChild(para);
+                        tr.appendChild(td);
+                        td = document.createElement('td');
+                        para = document.createTextNode(artistName);
+                        td.appendChild(para);
+                        tr.appendChild(td);
+                        td = document.createElement('td');
+                        para = document.createTextNode(addedBy);
+                        td.appendChild(para);
+                        tr.appendChild(td);
+                        body.appendChild(tr);
+                //     <tr>
+                //     <th scope="row">1</th>
+                //     <td>Mark</td>
+                //     <td>Otto</td>
+                //      <td></td>
+                //     </tr>
+                    }
+
+                }
+            }
+        );
+        
+    }
+    const addSongToQueue = (key, songId, artistName, songName, addedBy, trackURI) => {
+        console.log(artistName, "TESTTEST");
+      var url = '/queue'+
+      '?id='+key +
+      '&songId='+songId+
+      '&songName='+songName +
+      '&addedBy='+addedBy+
+      '&artistName='+artistName+
+      '&trackURI='+trackURI;
+        $.ajax({
+            url: url,
+            method: 'PUT',
+            data: {
+            //   'id' : key,
+            //   'songId' : songId,
+            //   'songName' : songName,
+            //   'addedBy' : addedBy,
+            //   'trackURI' : trackURI
+            },
+            processData: false,
+            success: (res) => { console.log("i put the song", res); }
+        }).done(()=>{
+            updateQueueDisplay(key);
+            
+        });
+    }
 
 
 // Checks if key entered by user is valid 
@@ -267,6 +347,8 @@ const usingPlaylist = (key)=>{
             }
         },
         fail: () => { console.log('fail'); }
+    }).done(()=>{
+        updateQueueDisplay(key);
     });
 }
 
@@ -298,7 +380,8 @@ const avail_dev = (access_token, res_func) => {
             
   			fail: () => { console.log('fail'); }
     	}
-  	).done((data) => { res_func(data.devices);  });
+      ).done((data) => { res_func(data.devices);  });
+      
 }
 
 const select_id = (dev_id, queue_id, dev_name) => {
