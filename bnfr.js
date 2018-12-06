@@ -63,6 +63,7 @@ app.use(express.static(__dirname + '/html'))
    .use(passport.initialize())
    .use(passport.session());
    
+console.log('url' + __dirname);
 multer();
 
 require("./app/app.js")(app);
@@ -122,12 +123,13 @@ app.get('/login', (req, res) => {
                 '&scope='        + scope +
                 '&redirect_uri=' + redirect_uri +
                 '&state='        + state;
-
+    console.log(url);
     res.redirect(url);
 });
 
 //GET: /callback from Spotify with state to get Auth tokens
 app.get('/callback', (req, res) => {
+    //console.log('the base url is: ' + req.url + '\n\n');
     const code        = req.query.code || null;
     const state       = req.query.state || null;
     const storedState = req.cookies ? req.cookies[stateKey] : null;
