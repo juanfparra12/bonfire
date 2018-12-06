@@ -26,7 +26,7 @@ const queueIdKey    = 'bonfire_queue_id';
 const devIdKey      = 'bonfire_dev_id'; 
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
-const redirect_uri  = 'https://the-bonfire-app.herokuapp.com/callback';   // redirect uri
+const redirect_uri  = 'https://the-bonfire-app.herokuapp.com/callback/';   // redirect uri
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
