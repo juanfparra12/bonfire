@@ -27,6 +27,8 @@ const devIdKey      = 'bonfire_dev_id';
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
 const redirect_uri  = 'http://localhost:8080/callback/';   // redirect uri
+
+
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
@@ -63,6 +65,7 @@ app.use(express.static(__dirname + '/html'))
    .use(passport.initialize())
    .use(passport.session());
    
+console.log('url' + __dirname);
 multer();
 
 require("./app/app.js")(app);
@@ -122,12 +125,13 @@ app.get('/login', (req, res) => {
                 '&scope='        + scope +
                 '&redirect_uri=' + redirect_uri +
                 '&state='        + state;
-
+    console.log(url);
     res.redirect(url);
 });
 
 //GET: /callback from Spotify with state to get Auth tokens
 app.get('/callback', (req, res) => {
+    //console.log('the base url is: ' + req.url + '\n\n');
     const code        = req.query.code || null;
     const state       = req.query.state || null;
     const storedState = req.cookies ? req.cookies[stateKey] : null;
