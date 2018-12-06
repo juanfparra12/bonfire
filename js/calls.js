@@ -132,78 +132,83 @@ $.ajax({
  });
 }
 
-var view = true;
-var viewSwitch = document.getElementById('switch-view');
-/*
-viewSwitch.addEventListener("click", function(){
-    view = !view;
-});*/
 
-const refresh_token = getCookie('spotify_ref_token');
-const search = (access_token, query) =>{
-    var url = '/search' +
-    '?access_token=' + access_token + 
-    '&query=' + stringToQuery(query, true);
-    console.log(url);
-   $.ajax(
-    {
-      type: "GET",
-      url: '/search',
-        data:{
-          'access_token': access_token,
-          'query': query
-        },
-        fail: () => { console.log('fail'); }
-    }
-  ).done((data) => { 
-      var resultsContainer = document.getElementById('search-results-container');
-      removeChildNodes(resultsContainer);
-      
-      for(var i = 0; i < data.tracks.items.length; i++){
-        console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-        var track_uri = data.tracks.items[i].uri;
+const search = (access_token, query, key, view) =>{
 
-        if(view){  
-            var results = document.createElement('div');
-            var para = document.createElement('p');
-            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-            para.appendChild(name);
-            results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + track_uri);
-            para.appendChild(uri);
-            results.appendChild(para);
-            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-            para.appendChild(id);
-            results.appendChild(para);
-             var img_url = data.tracks.items[i].album.images[0].url;
-            var img = document.createElement('img');
-            img.src = img_url;
-            img.className = "search-results-image";
-            results.appendChild(img);
-            
-            results.appendChild(addTrackBtn(access_token, track_uri, getCookie('bonfire_playlist_id')));
-            results.className = 'search-results';
-         }
-        else{
-            console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
-            var results = document.createElement('div');
-            var para = document.createElement('p');
-            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
-            para.appendChild(name);
-            results.appendChild(para);
-            var uri = document.createTextNode("Track URI: " + track_uri);
-            para.appendChild(uri);
-            results.appendChild(para);
-            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
-            para.appendChild(id);
-            results.appendChild(para);
-            results.appendChild(addTrackBtn(access_token, track_uri, getCookie('bonfire_playlist_id')));
-            results.className = 'search-results-list';
-    
+    var new_access_token = access_token;
+    console.log("old access", access_token);
+    $.ajax(
+        {
+            type: "GET",
+            url: '/queue',
+            data:{
+                'id':key
+            },
+            success:(res) =>{
+                setCookie('bonfire_playlist_id', res.playlistId);
+                new_access_token = res.accessToken;
+                $.ajax(
+                    {
+                      type: "GET",
+                      url: '/search',
+                        data:{
+                            'access_token': new_access_token,
+                            'query': query
+                        },
+                        fail: () => { console.log('fail'); },
+                        success:()=>{console.log("new access", new_access_token);}
+                    }).done((data) => { 
+                      var resultsContainer = document.getElementById('search-results-container');
+                      removeChildNodes(resultsContainer);
+                      
+                      for(var i = 0; i < data.tracks.items.length; i++){
+                        console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
+                        var track_uri = data.tracks.items[i].uri;
+                
+                        if(view){  
+                           var results = document.createElement('div');
+                           var img_url = data.tracks.items[i].album.images[0].url;
+                           var img = document.createElement('img');
+                           img.src = img_url;
+                           img.className = "search-results-image";
+                           results.appendChild(img);
+                           var para = document.createElement('p');
+                           var name = document.createTextNode(data.tracks.items[i].name);
+                           para.appendChild(name);
+                           results.appendChild(para);
+                           var para = document.createElement('p');
+                           var artist = document.createTextNode(data.tracks.items[i].artists[0].name);
+                           para.appendChild(artist);
+                           results.appendChild(para);
+
+                            results.appendChild(addTrackBtn(new_access_token, track_uri, getCookie('bonfire_playlist_id')));
+                            results.className = 'search-results';
+                         }
+                        else{
+                            console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
+                            var results = document.createElement('div');
+                            var para = document.createElement('p');
+                            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
+                            para.appendChild(name);
+                            results.appendChild(para);
+                            var uri = document.createTextNode("Track URI: " + track_uri);
+                            para.appendChild(uri);
+                            results.appendChild(para);
+                            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
+                            para.appendChild(id);
+                            results.appendChild(para);
+                            results.appendChild(addTrackBtn(new_access_token, track_uri, getCookie('bonfire_playlist_id')));
+                            results.className = 'search-results-list';
+                    
+                        }
+                        resultsContainer.appendChild(results);
+                       }
+                    });
+            }
+
         }
-        resultsContainer.appendChild(results);
-       }
-    });
+    );
+
     // Recursively removes child nodes in the html
      var removeChildNodes = function(parentDiv){
 		while (parentDiv.hasChildNodes()) {
@@ -213,18 +218,49 @@ const search = (access_token, query) =>{
 
     // Add track button functionality for each search result
     var addTrackBtn = function(access_token, track_uri, playlist_id){
+        // $("#playlist-creator-name")
         var addBtn = document.createElement('button');
         var btnText = document.createTextNode("Add Track");
+        
         addBtn.appendChild(btnText);
             addBtn.addEventListener("click",
                 ()=>{
-                    add_track(access_token, track_uri, playlist_id );
-                    console.log("Adding track", track_uri);
-                    console.log
+                    alert("Track has been added");
+                    console.log("TRACK_ACCESS", access_token);
+                    add_track(access_token, track_uri, playlist_id);
                 }, false
             );
+        addBtn.className = "btn btn-secondary btn-sm";
         return addBtn;
     }
+}
+
+
+// Checks if key entered by user is valid 
+const usingPlaylist = (key)=>{
+    var url = '/queue' +
+    '?id=' + key;
+    console.log(url);
+   $.ajax(
+    {
+      type: "GET",
+      url: url,
+        data:{
+        },
+        success: (response) =>{
+            if(response == null){
+                $("#current-creator-name").text("Invalid Key");
+                $("#current-key").text("");
+                // setCookie("bonfire_queue_user", "null", 1);
+            }
+            else{
+                $("#current-creator-name").text(response.creator);
+                $("#current-key").text(key);
+                // setCookie("bonfire_queue_user", key, 1);
+            }
+        },
+        fail: () => { console.log('fail'); }
+    });
 }
 
 
@@ -271,4 +307,5 @@ const select_id = (dev_id, queue_id, dev_name) => {
         setCookie('bonfire_dev_id', "", 1); 
         avail_dev(getCookie('spotify_acc_token'), list_devices); });
 }
+
 

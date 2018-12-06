@@ -11,10 +11,10 @@
 
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Bonfire - Live Music Queue</title>
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+  <head>
+    <title>Bonfire - Live Music Queue</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
         <link rel = "stylesheet" href="style.css">
         <!-- <link href="css/style.css" rel="stylesheet"/> -->
@@ -31,25 +31,25 @@
         <script src="nav/nav.controller.js"></script>
         <script src="admin/admin.controller.js"></script>
         <script src="services/user.services.client.js"></script>
-	</head>
-	
-		<body ng-app="PassportApp">
+  </head>
+  
+    <body ng-app="PassportApp">
 
-            <nav ng-controller="NavCtrl" class="navbar navbar-light" style="background-color: #B6B9EF;">
+            <nav ng-controller="NavCtrl" class="navbar navbar-light">
                   <a class="navbar-brand" >
-                    <img src="bonfire-img copy.png" height="40" alt="">
+                    <img id="icon" src="bonfire-img copy.png">
                   </a>
-                  <a class="btn btn-primary btn-lg" href="#home"  role="button">Home</a> 
-                  <span ng-show="!currentUser">
-                      <a class="btn btn-primary btn-lg" href="#login"  role="button">Login</a> 
-                      <a class="btn btn-primary btn-lg" href="#register"  role="button">Register</a> 
+                   <span ng-show="!currentUser">
+                     <a class="button" href="#register"  role="button">Register</a>
+                    <a class="button" href="#login"  role="button">Login</a> 
                   </span>
+                  <a class="button" href="#home"  role="button">Home</a> 
                   <span ng-show="currentUser">
-                      <a class="btn btn-primary btn-lg" href="#profile"  role="button">Profile</a> 
+                      <a class="button" href="#profile"  role="button">Profile</a> 
                       <span ng-show="currentUser.roles.indexOf('admin') != -1">
-                      <a class="btn btn-primary btn-lg" href="#admin"  role="button">Admin</a> 
+                      <a class="button" href="#admin"  role="button">Admin</a> 
                       </span>
-                      <a  class="btn btn-primary btn-lg" href="#logout" role="button" ng-click="logout()" onClick="window.location.href=window.location.href">Logout</a>
+                      <a  class="button" href="#logout" role="button" ng-click="logout()" onClick="window.location.href=window.location.href">Logout</a>
                   </span>
                     
             
@@ -60,15 +60,13 @@
             </div>
      
     
-		<h1>BONFIRE</h1>
-		<a href = "/login" class="btn btn-primary">light bonfire</a>
-		<h2> or</h2>
-		<a href = "user.html" class="btn btn-primary">join bonfire</a>  <!-- TODO: have empty form, to allow submission of bonfire id -->
-	   </div>
+    <h1>BONFIRE</h1>
+    <a href = "/login" class="btn btn-primary">light bonfire</a>
+    <h2> or</h2>
+    <a href = "user.html" class="btn btn-primary">join bonfire</a>  <!-- TODO: have empty form, to allow submission of bonfire id -->
+     </div>
    </body> 
 </html>
-
-
 
 
 

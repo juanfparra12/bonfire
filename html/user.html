@@ -14,15 +14,27 @@
 	<head>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel = "stylesheet" href="creator-style.css">
+
+		<script src="js-2/jquery-1.11.2.js"></script>
+        <script src="js-2/bootstrap.js"></script>
+        <script src="js-2/angular.js"></script>
+        <script src="js-2/angular-route.js"></script>
+        <script src="app.js"></script>
+        <script src="config.js"></script>
+        <script src="home/home.controller.js"></script>
+        <script src="login/login.controller.js"></script>
+        <script src="register/register.controller.js"></script>
+        <script src="profile/profile.controller.js"></script>
+        <script src="nav/nav.controller.js"></script>
+        <script src="admin/admin.controller.js"></script>
+        <script src="services/user.services.client.js"></script>
 	</head>
-	<div class="header">
-            <!--List to organize buttons-->
-            <!-- <p class="headerName">BONFIRE</p> -->
+	<!-- <div class="header">   
             <a href = "index.html">
             	<img id="icon" src="/Images/bonfire-img.png" >
             </a>
             <ul class="headerButtonContainer">
-                <!--Buttons-->
+               
                 <li class="headerButton">
                 	<img id="user-icon" src="/Images/user.png">
                 	<div id="TEST"></div>
@@ -33,37 +45,71 @@
                 	Settings
             	</li>
             </ul>
+    </div> -->
+
+    <div class="header">
+            <!--List to organize buttons-->
+            <a href = "index.html">
+            	<img id="icon" src="/Images/bonfire-img.png" >
+            </a>
+            <ul class="headerButtonContainer">
+                <!--Buttons-->
+                <li class="headerButton"><a href="/#/logout">Logout</a></li>
+                <li class="headerButton"><a href="/#/profile">Profile</a></li>
+                <li class="headerButton"><a href="/#/.html">Home</a></li>
+            </ul>
     </div>
-	<body>
+
+    <!-- <body ng-app="PassportApp">
+        <nav ng-controller="NavCtrl" class="navbar navbar-light">
+              <a class="navbar-brand" >
+                <img id="icon" src="bonfire-img copy.png">
+              </a>
+               <span ng-show="!currentUser">
+              </span>
+              <a class="button" href="/#/home"  role="button">Home</a> 
+              <span ng-show="currentUser">
+                  <a class="button" href="/#/profile"  role="button">Profile</a> 
+                  <span ng-show="currentUser.roles.indexOf('admin') != -1">
+                  <a class="button" href="#admin"  role="button">Admin</a> 
+                  </span>
+                  <a  class="button" href="/#/logout" role="button" ng-click="logout()" onClick="window.location.href=window.location.href">Logout</a>
+              </span>
+        </nav>
+	<body> -->
 	
 		<div class = "container">
 			 <div id="loggedin">
         
-		    	<div id="user-profile"></div>
+		    	<!-- <div id="user-profile"></div> -->
 		        
-		        <div id="oauth"></div>
+		        <div id="oauth" style="display: none;"></div>
 		    </div>
 		    <div class="light-bonfire-login">
-		    	<form id = "login-key-form" action="">
+				<h1>Current Playlist:</h1>
+				<h3 id="current-creator-name"></h3>
+				<h4 id="current-key"></h4>
+		    	<form id = "login-key-form" onsubmit="return false;">
   					<br>
   					<input type="text" id="key" value=""placeholder="Enter Key ID" >
   					<br>
-  					<input type="submit" id="submit-button" value="Submit">
+  					<input type="submit" id="key-submit-button" value="Submit">
 				</form>		    	
 		    </div>
-		     <div class="creator-controls">
-		    	<form id = "search-form" action="/search">
-  					<input type="text" id="query" value="" placeholder="Add to Queue">
-  					<br>
-					<input id = "search-btn" type="submit" value="Search">
-					<button type="button" class="btn btn-secondary btn-lg" id="add-track-btn">Add track</button>
-				</form>
-				<button id="switch-view">Switch View</button>
-				</div>
-				<div id ='search-results-container'>
-				<div class='search-results'></div>
-			</div>
 
+		    <div class="creator-controls">
+		    	<form id = "search-form" onsubmit="return false;">
+  					<div class="active-cyan-4 mb-4">
+  						<input class="form-control" type="text" id="query" value ="" placeholder="Search songs..." aria-label="Search">
+					</div>
+
+					<div class="btn-group inline pull-left" data-toggle="buttons-checkbox"> 
+						<button type="button" class="btn btn-primary" id="search-btn" style="margin-right: 10px" >Search</button>
+						<button type="button" class="btn btn-primary" id="switch-view">Switch</button>
+					</div>
+				</form>
+			</div>
+				<div id ='search-results-container'></div>
 		</div>
 
 
@@ -93,7 +139,7 @@
 		        </div>
 	      	</div>
 	    </script>
-	    END INFO
+	    <!-- END INFO -->
 
 
 	    <!-- DISPLAY TOKEN -->
@@ -157,20 +203,48 @@
 		            $('#loggedin').hide();
 		        }
 
-		       
+			   
+				var view = true;
+				var viewSwitch = document.getElementById('switch-view');
+				var resultsContainer = document.getElementById('search-results-container');
+
+				// Switches between list and tile view
+				viewSwitch.addEventListener("click", function(){
+					view = !view;
+					var key = $('#current-key').text();
+					if(key != ""){
+							refreshtoken(refresh_token, (res) => { access_token = res; });
+							var query = document.getElementById('query').value;
+							search(access_token, query, key, view);
+						}else{
+							alert("Please enter a key");
+					}
+				});
+
 	            document.getElementById('search-btn').addEventListener('click',
 	            	()=>{
-	            		refreshtoken(refresh_token, (res) => { access_token = res; });
-						var query = document.getElementById('query').value;
-	            		search(access_token, query);
+						var key = $('#current-key').text();
+						if(key != ""){
+							refreshtoken(refresh_token, (res) => { access_token = res; });
+							var query = document.getElementById('query').value;
+							search(access_token, query, key, view);
+						}else{
+							alert("Please enter a key");
+						}
+
 	            	}, false);
-	            document.getElementById('add-track-btn').addEventListener('click',
-	            	()=>{
-	            		refreshtoken(refresh_token, (res) => {access_token = res;});
-	            		add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
-	            	},false);
+	            // document.getElementById('add-track-btn').addEventListener('click',
+	            	// ()=>{
+	            		// refreshtoken(refresh_token, (res) => {access_token = res;});
+	            		// add_track(access_token, 'spotify%3Atrack%3A2FRnf9qhLbvw8fu4IBXx78', getCookie('bonfire_playlist_id'), update_queue_playlist)
+					// },false);
+				document.getElementById('key-submit-button').addEventListener('click',
+					()=>{
+						var key = document.getElementById('key').value;
+						usingPlaylist(key);
+					},false);
 	        }  
-	      })();
+		  })();
 	    </script>
 
 	</body>
