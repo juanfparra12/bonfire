@@ -128,8 +128,8 @@ app.get('/login', (req, res) => {
 });
 
 //GET: /callback from Spotify with state to get Auth tokens
-app.get('/callback', (req, res) => {
-    console.log('the base url is: ' + req.url + '\n\n');
+app.get('/callback/', (req, res) => {
+    //console.log('the base url is: ' + req.url + '\n\n');
     const code        = req.query.code || null;
     const state       = req.query.state || null;
     const storedState = req.cookies ? req.cookies[stateKey] : null;
