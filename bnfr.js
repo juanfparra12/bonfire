@@ -63,6 +63,7 @@ app.use(express.static(__dirname + '/html'))
    .use(passport.initialize())
    .use(passport.session());
    
+console.log('url' + __dirname);
 multer();
 
 require("./app/app.js")(app);
@@ -122,7 +123,7 @@ app.get('/login', (req, res) => {
                 '&scope='        + scope +
                 '&redirect_uri=' + redirect_uri +
                 '&state='        + state;
-
+    console.log(url);
     res.redirect(url);
 });
 
