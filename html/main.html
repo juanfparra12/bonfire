@@ -186,7 +186,15 @@
 	            document.getElementById('start-playlist').addEventListener('click', 
 	          		() => {
 		          		refreshtoken(refresh_token, (res) => { access_token = res; });
-		          		start(access_token, devlist[i].id, res_func);
+		          		if (getCookie('bonfire_dev_id') == null) {
+			          		alert('Please select a device for the bonfire');	
+			          	}
+			          	else if (getCookie('bonfire_playlist_uri') == null) {
+			          		alert('Please create a playlist for the bonfire');
+			          	}
+			          	else {
+			          		start(access_token, getCookie('bonfire_dev_id'), getCookie('bonfire_playlist_uri'));
+			          	}
 	            }, false);
 	        } 
 	      })();

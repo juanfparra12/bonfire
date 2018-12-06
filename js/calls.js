@@ -15,16 +15,18 @@ const update_queue_playlist = (res) => {
     console.log(queue_id);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
+	setCookie('bonfire_playlist_id', res.id, 1);
+	setCookie('bonfire_playlist_uri', res.uri, 1); 
 	$.ajax({
         url: url_id,
         method: 'PUT',
-        success: (response) => { setCookie('bonfire_playlist_id', res.id, 1); console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
+        success: (response) => { console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
     });
 
     $.ajax({
         url: url_uri,
         method: 'PUT',
-        success: (response) => { setCookie('bonfire_playlist_uri', res.uri, 1); console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
+        success: (response) => { console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
     });
 }
 
@@ -119,17 +121,16 @@ const add_track = (access_token, track_uri, playlist_id, res_func) =>{
  });
 }
 
-const start = (access_token, device_id, playlist_uri, res_func) =>{
-$.ajax({
-   url: '/start',
-   method: 'POST',
-   data: {
-     'access_token': access_token,
-     'device_id': device_id,
-     'playlist_uri': playlist_uri 
-   },
-   success: (response) => { console.log(response); }
- });
+const start = (access_token, device_id, playlist_uri) =>{
+	console.log('access: ' + access_token);
+	console.log('device_id: ' + device_id);
+	console.log('uri: ' + playlist_uri);
+	const url = '/start?access_token=' + access_token + '&playlist_uri=' + playlist_uri + '&device_id=' + device_id;
+	$.ajax({
+	   url: url,
+	   method: 'PUT',
+	   success: (response) => { console.log(response); }
+	 });
 }
 
 

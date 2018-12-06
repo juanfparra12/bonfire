@@ -26,7 +26,8 @@ const queueIdKey    = 'bonfire_queue_id';
 const devIdKey      = 'bonfire_dev_id'; 
 const client_id     = '8aa11aaababa4e6c968030e37d1540a5'; // client id
 const client_secret = '95b7bbc7b3a442e9b5885a8d5d1106b9'; // secret
-const redirect_uri  = 'https://bnfr.azurewebsites.net/callback';   // redirect uri
+//const redirect_uri  = 'https://bnfr.azurewebsites.net/callback';   // redirect uri
+const redirect_uri  = 'http://localhost:8080/callback/';
 const scope         = 'user-read-recently-played user-follow-read user-modify-playback-state user-library-read user-library-modify user-top-read user-read-private playlist-read-collaborative playlist-read-private app-remote-control user-read-currently-playing user-read-email user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
@@ -92,7 +93,7 @@ app.delete('/queue/songs', queue.deleteSong);
 mongoose.connect("mongodb://admin:webapps7@ds239557.mlab.com:39557/bonfire-queue", {useNewUrlParser:true});
 
 const create_queue = (access_token, refresh_token, res, red_url) => {
-    const url = 'http://localhost:8080/queue' +
+    const url = 'https://bnfr.azurewebsites.net/queue' +
                 '?access_token='  + access_token +
                 '&refresh_token=' + refresh_token;
 
@@ -303,7 +304,9 @@ app.put('/start', (req, res) => {
         },
         json: true
     };
-    console.log('here');
+    console.log('access: ' + access_token);
+    console.log('device_id: ' + device_id);
+    console.log('uri: ' + playlist_uri);
     request.put(options, (error, response, body) => {
         if (!error && response.statusCode === 204) { res.send('Playlist started'); }
     });  
