@@ -23,15 +23,10 @@
             </a>
             <ul class="headerButtonContainer">
                 <!--Buttons-->
-                <li class="headerButton">
+                <!-- <li class="headerButton">
                 	<img id="user-icon" src="/images/user.png">
                 	<div id="TEST"></div>
-                </li>
-
-                <li class="headerButton">
-                	<img id="settings-icon" src="/images/settings.png">
-                	Settings
-            	</li>
+                </li> -->
 			<li class="headerButton" id="keyContainer">Key: </li>
             </ul>
     </div>
@@ -39,16 +34,31 @@
 	
 		<div class = "container">
 			 <div id="loggedin">
-		    	<div id="user-profile"></div>
+					<div id="user-profile"></div>
+					<div id="queue-container-creator" class="scrollbar scrollbar-primary">
+							<div id="queue-display-creator" >
+								<table class="table table-hover">
+										<thead>
+											<tr>
+											<th scope="col">#</th>
+											<th scope="col">Song</th>
+											<th scope="col">Artist</th>
+											<th scope="col">Added By</th>
+											</tr>
+										</thead>
+										<tbody id=queue-body>
+										</tbody>
+										</table>
+							</div>
+						</div>
 	`			<h3 id = "select-dev-title">select device for playback</h3>
 		        <div id = "device_list"></div>
-		        <button type="button" class="btn btn-secondary btn-lg" id="new-dev">refresh devices</button>
+		        <button type="button" class="btn btn-primary btn-lg" id="new-dev">refresh devices</button>
 		    </div>
 		    <div class="creator-controls">
-		     	<button type="button" class="btn btn-secondary btn-lg" id="create-playlist">Create Playlist</button>
-		    	<button type="button" class="btn btn-secondary btn-lg" id="start-playlist">Start Playlist</button>
-		   
-		    	<h2>Number of Songs Added by User?</h2>
+		     	<button type="button" class="btn btn-primary btn-lg" id="create-playlist">Create Playlist</button>
+		    	<button type="button" class="btn btn-primary btn-lg" id="start-playlist">Start Playlist</button>
+		    	<!-- <h2>Number of Songs Added by User?</h2>
    
       			<div class="slidecontainer">
 				  <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
@@ -88,7 +98,7 @@
 					      <input type="radio" name="shuffle-song">No
 					    </label>
 					  </form>
-				</form>
+				</form> -->
 			</div>
 
 		</div>
@@ -102,7 +112,7 @@
 
 		<!-- USER INFO HANDLEBAR TEMPLATE -->
 		<script id="user-profile-template" type="text/x-handlebars-template">
-		    <h1>Logged in as {{display_name}}</h1>
+		    <h1>Welcome {{display_name}}</h1>
 		    <div class="media">
 		        <div class="pull-left">
 		          	<img class="media-object" width="150" src="{{images.0.url}}" />
