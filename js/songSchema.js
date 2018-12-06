@@ -21,7 +21,14 @@ const songSchema = new Schema({
         type: String,
         required: true
     },
+    artistName:{
+
+    },
     addedBy:{
+        type: String,
+        required: true
+    },
+    trackURI:{
         type: String,
         required: true
     }

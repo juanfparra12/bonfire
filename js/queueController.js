@@ -173,22 +173,28 @@ exports.delete = function(req, res){
 
 // Song Controls
 
+// PUT:
 // Update queue with songs
 // Requires CreatorID, songId, songName, and addedBy name
 exports.addSong = function(req, res){
     var queueId = req.query.id;
     var songId = req.query.songId;
     var songName = req.query.songName;
+    var artistName = req.query.artistName;
     var addedBy = req.query.addedBy;
-
+    var track_uri = req.query.trackURI;
+    
+    
     var song = new Song(
         {
             "songId" : songId,
             "name" : songName,
-            "addedBy" : addedBy
+            "artistName" : artistName,
+            "addedBy" : addedBy,
+            "trackURI" : track_uri
         }
     );
-    console.log(song);
+    console.log("Song has been added", song);
     // // Check if player already has a playlist
     Queue.findOne({queueId:queueId}, (err, queue) => {
         if(err){
