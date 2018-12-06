@@ -26,8 +26,8 @@
                 <!-- <li class="headerButton">
                 	<img id="user-icon" src="/images/user.png">
                 	<div id="TEST"></div>
-                </li> -->
-			<li class="headerButton" id="keyContainer">Key: </li>
+								</li> -->
+			<li class="headerButton" id="keyContainer">Playlist Key: </li>
             </ul>
     </div>
 	<body>
@@ -50,6 +50,7 @@
 										</tbody>
 										</table>
 							</div>
+
 						</div>
 	`			<h3 id = "select-dev-title">select device for playback</h3>
 		        <div id = "device_list"></div>
@@ -57,7 +58,10 @@
 		    </div>
 		    <div class="creator-controls">
 		     	<button type="button" class="btn btn-primary btn-lg" id="create-playlist">Create Playlist</button>
-		    	<button type="button" class="btn btn-primary btn-lg" id="start-playlist">Start Playlist</button>
+					<button type="button" class="btn btn-primary btn-lg" id="start-playlist">Start Playlist</button>
+					<input type="button" class="btn btn-primary" id="refresh-queue-btn-creator" value="Refresh Queue"></input>
+
+					
 		    	<!-- <h2>Number of Songs Added by User?</h2>
    
       			<div class="slidecontainer">
@@ -205,8 +209,14 @@
 			          	else {
 			          		start(access_token, getCookie('bonfire_dev_id'), getCookie('bonfire_playlist_uri'));
 			          	}
-	            }, false);
-	        } 
+							}, false);
+							document.getElementById('refresh-queue-btn-creator').addEventListener('click',
+							()=>{
+								var key = getCookie('bonfire_queue_id');
+								updateQueueDisplay(key);
+							},false);
+
+	       		 } 
 	      })();
 	    </script>
 	</body>

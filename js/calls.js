@@ -15,18 +15,16 @@ const update_queue_playlist = (res) => {
     console.log(queue_id);
 	const url_id   = '/queue/update/playlist_id?playlist_id='   + res.id  + '&id=' + queue_id;
 	const url_uri  = '/queue/update/playlist_uri?playlist_uri=' + res.uri + '&id=' + queue_id;
-	setCookie('bonfire_playlist_id', res.id, 1);
-	setCookie('bonfire_playlist_uri', res.uri, 1); 
 	$.ajax({
         url: url_id,
         method: 'PUT',
-        success: (response) => { console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
+        success: (response) => { setCookie('bonfire_playlist_id', res.id, 1); console.log('playlist id is: ' + getCookie('bonfire_playlist_id'))}
     });
 
     $.ajax({
         url: url_uri,
         method: 'PUT',
-        success: (response) => { console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
+        success: (response) => { setCookie('bonfire_playlist_uri', res.uri, 1); console.log('playlist uri is: ' + getCookie('bonfire_playlist_uri'))}
     });
 }
 
@@ -87,7 +85,7 @@ const create_pl = (access_token, user_id, res_func) =>{
     },
     success: (response) => {
         setCookie('bonfire_queue_id', response.queueId, 1); 
-        document.getElementById("keyContainer").innerHTML = "Key: " + getCookie('bonfire_queue_id'); 
+        document.getElementById("keyContainer").innerHTML = "Playlist Key: " + getCookie('bonfire_queue_id'); 
         
         // Checks if playlist created by bonfire already exists or not
         if(response.playlistId == null){
@@ -121,16 +119,17 @@ const add_track = (access_token, track_uri, playlist_id, res_func) =>{
  });
 }
 
-const start = (access_token, device_id, playlist_uri) =>{
-	console.log('access: ' + access_token);
-	console.log('device_id: ' + device_id);
-	console.log('uri: ' + playlist_uri);
-	const url = '/start?access_token=' + access_token + '&playlist_uri=' + playlist_uri + '&device_id=' + device_id;
-	$.ajax({
-	   url: url,
-	   method: 'PUT',
-	   success: (response) => { console.log(response); }
-	 });
+const start = (access_token, device_id, playlist_uri, res_func) =>{
+$.ajax({
+   url: '/start',
+   method: 'POST',
+   data: {
+     'access_token': access_token,
+     'device_id': device_id,
+     'playlist_uri': playlist_uri 
+   },
+   success: (response) => { console.log(response); }
+ });
 }
 
 
@@ -189,13 +188,15 @@ const search = (access_token, query, key, view) =>{
                             console.log(data.tracks.items[i].name + " " + data.tracks.items[i].uri + " " + data.tracks.items[i].id);
                             var results = document.createElement('div');
                             var para = document.createElement('p');
-                          var name = document.createTextNode(data.tracks.items[i].name);
-                           para.appendChild(name);
-                           results.appendChild(para);
-                           var para = document.createElement('p');
-                           var artist = document.createTextNode(data.tracks.items[i].artists[0].name);
-                           para.appendChild(artist);
-                           results.appendChild(para);
+                            var name = document.createTextNode("Track Name: " + data.tracks.items[i].name);
+                            para.appendChild(name);
+                            results.appendChild(para);
+                            var uri = document.createTextNode("Track URI: " + track_uri);
+                            para.appendChild(uri);
+                            results.appendChild(para);
+                            var id = document.createTextNode("Track ID: " + data.tracks.items[i].id);
+                            para.appendChild(id);
+                            results.appendChild(para);
                             results.appendChild(addTrackBtn(new_access_token, track_uri, song_id, data.tracks.items[i].artists[0].name, data.tracks.items[i].name, getCookie('bonfire_playlist_id')));
                             results.className = 'search-results-list';
                     

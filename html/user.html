@@ -128,8 +128,12 @@
 
 					<div class="btn-group inline pull-left" data-toggle="buttons-checkbox"> 
 						<input type="button" class="btn btn-primary" id="search-btn" style="margin-right: 10px" value="Search"></input>
-						<input type="button" class="btn btn-primary" id="switch-view" value="Switch"></input>
+						<input type="button" class="btn btn-primary" id="switch-view"style="margin-right: 10px" value="Switch"></input>
+						<input type="button" class="btn btn-primary" id="refresh-queue-btn" value="Refresh Queue"></input>
+					
 					</div>
+					
+
 				</form>
 			</div>
 				<div id ='search-results-container'></div>
@@ -266,6 +270,11 @@
 						var key = document.getElementById('key').value;
 						usingPlaylist(key);
 					},false);
+				document.getElementById('refresh-queue-btn').addEventListener('click',
+				()=>{
+					var key = document.getElementById('key').value;
+					updateQueueDisplay(key);
+				},false);
 	        }  
 		  })();
 	    </script>
